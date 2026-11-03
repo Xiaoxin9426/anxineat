@@ -1,0 +1,73 @@
+{
+  "pages": [
+    "pages/welcome/welcome",
+    "pages/index/index",
+    "pages/store/store",
+    "pages/menu/menu",
+    "pages/product/product",
+    "pages/cart/cart",
+    "pages/confirm/confirm",
+    "pages/payment/payment",
+    "pages/result/result",
+    "pages/orders/orders",
+    "pages/orderDetail/orderDetail",
+    "pages/address/address",
+    "pages/addressEdit/addressEdit",
+    "pages/coupons/coupons",
+    "pages/myCoupons/myCoupons",
+    "pages/points/points",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#E4002B",
+    "navigationBarTitleText": "安心饮",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F6F8",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#9A9AA0",
+    "selectedColor": "#E4002B",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/tab/home.png",
+        "selectedIconPath": "assets/tab/home-on.png"
+      },
+      {
+        "pagePath": "pages/menu/menu",
+        "text": "点餐",
+        "iconPath": "assets/tab/cup.png",
+        "selectedIconPath": "assets/tab/cup-on.png"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "订单",
+        "iconPath": "assets/tab/order.png",
+        "selectedIconPath": "assets/tab/order-on.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/tab/me.png",
+        "selectedIconPath": "assets/tab/me-on.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于为你推荐距离最近的安心饮门店"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "renderer": "webview"
+}

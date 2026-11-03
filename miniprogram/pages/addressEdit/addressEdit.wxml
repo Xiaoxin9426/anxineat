@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="card m16 form">
+    <view class="row">
+      <text class="lbl">收件人</text>
+      <input class="ipt" placeholder="姓名" value="{{name}}" data-k="name" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <text class="lbl">手机号</text>
+      <input class="ipt" type="number" maxlength="11" placeholder="11 位手机号" value="{{phone}}" data-k="phone" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <text class="lbl">省</text>
+      <input class="ipt" value="{{province}}" placeholder="如 河南省" data-k="province" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <text class="lbl">市</text>
+      <input class="ipt" value="{{city}}" placeholder="如 郑州市" data-k="city" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <text class="lbl">区/县</text>
+      <input class="ipt" value="{{district}}" placeholder="如 中原区" data-k="district" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <text class="lbl">详细</text>
+      <input class="ipt" value="{{detail}}" placeholder="街道、楼栋、门牌号" data-k="detail" bindinput="onInput" />
+    </view>
+  </view>
+
+  <view class="card m16">
+    <view class="lbl">标签</view>
+    <view class="tags">
+      <view wx:for="{{tags}}" wx:key="*this" class="tag-item {{tag===item?'on':''}}"
+            data-t="{{item}}" bindtap="onPickTag">{{item}}</view>
+    </view>
+    <view class="row top mt-16">
+      <text class="text-strong">设为默认</text>
+      <switch checked="{{isDefault}}" bindchange="onToggleDefault" color="#E4002B" />
+    </view>
+  </view>
+
+  <view class="foot safe-bottom">
+    <view class="btn btn-primary {{submitting ? 'disabled' : ''}}" bindtap="onSave">保存</view>
+  </view>
+</view>

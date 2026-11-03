@@ -1,0 +1,19 @@
+.page { padding: 0 0 40rpx; }
+.tabs { display: flex; background: #fff; border-bottom: 1rpx solid var(--border); }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 28rpx; color: var(--text-sub); position: relative; }
+.tab.on { color: var(--primary); font-weight: 600; }
+.tab.on::after { content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 48rpx; height: 4rpx; background: var(--primary); border-radius: 2rpx; }
+.list { display: flex; flex-direction: column; gap: 16rpx; padding-top: 16rpx; }
+.m16 { margin: 0 16rpx; }
+.cp { display: flex; align-items: center; padding: 20rpx; }
+.cp.expired { opacity: 0.5; }
+.cp-l { width: 180rpx; text-align: center; }
+.cp-amt { font-size: 44rpx; }
+.cp-cond { margin-top: 4rpx; }
+.cp-m { flex: 1; min-width: 0; padding: 0 16rpx; }
+.cp-r { width: 120rpx; text-align: right; }
+.status { font-size: 24rpx; }
+.status.UNUSED { color: var(--primary); }
+.status.USED, .status.EXPIRED { color: var(--text-mute); }
+.loading { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+.sk-row { height: 180rpx; }

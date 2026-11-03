@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="loading" wx:if="{{loading}}">
+    <view class="skeleton sk-row" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+  </view>
+
+  <view class="list" wx:elif="{{list.length}}">
+    <view wx:for="{{list}}" wx:key="templateId" class="cp card m16 {{item.canReceive ? '' : 'off'}}">
+      <view class="cp-l">
+        <view class="cp-amt text-primary text-strong" wx:if="{{item.type==='NO_THRESHOLD' || item.type==='FULL_REDUCTION'}}">¥{{item.amount/100}}</view>
+        <view class="cp-amt text-primary text-strong" wx:elif="{{item.type==='DISCOUNT'}}">{{item.discount/1000}}折</view>
+        <view class="cp-amt text-strong" wx:else>¥{{item.amount/100}}</view>
+        <view class="cp-cond text-sub text-xs" wx:if="{{item.minAmount > 0}}">满 ¥{{item.minAmount/100}} 可用</view>
+        <view class="cp-cond text-sub text-xs" wx:else>无门槛</view>
+      </view>
+      <view class="cp-m">
+        <view class="text-strong text-ellipsis">{{item.name}}</view>
+        <view class="text-mute text-xs">有效期 {{item.validDays}} 天 · 限领 {{item.limitPerUser}} 张</view>
+        <view class="text-mute text-xs" wx:if="{{item.pointCost > 0}}">兑换需要 {{item.pointCost}} 积分</view>
+        <view class="text-mute text-xs" wx:if="{{item.channels}}">支持渠道：{{item.channels}}</view>
+      </view>
+      <view class="cp-r">
+        <view class="btn {{item.canReceive ? 'btn-primary' : 'btn-line'}}" data-id="{{item.templateId}}" bindtap="onReceive">
+          {{item.canReceive ? '领取' : '已达上限'}}
+        </view>
+        <view wx:if="{{!item.canReceive && item.receiveDisabledReason}}" class="text-mute text-xs mt-8">{{item.receiveDisabledReason}}</view>
+      </view>
+    </view>
+  </view>
+
+  <empty wx:else text="暂无优惠券" icon="🎁" />
+</view>

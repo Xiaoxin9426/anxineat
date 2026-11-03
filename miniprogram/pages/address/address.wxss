@@ -1,0 +1,15 @@
+.page { padding: 0 0 40rpx; }
+.head { padding: 24rpx; font-size: 32rpx; font-weight: 700; }
+.m16 { margin: 0 16rpx; }
+.list { display: flex; flex-direction: column; gap: 16rpx; padding-top: 16rpx; }
+.a { padding: 20rpx; border: 2rpx solid transparent; }
+.a.on { border-color: var(--primary); }
+.row { display: flex; align-items: center; gap: 12rpx; }
+.row.top { font-size: 30rpx; }
+.addr { margin-top: 8rpx; font-size: 26rpx; }
+.ops { display: flex; gap: 16rpx; padding-top: 16rpx; border-top: 1rpx solid var(--border); margin-top: 12rpx; }
+.op { font-size: 24rpx; color: var(--text-sub); padding: 4rpx 12rpx; }
+.op.danger { color: var(--danger); }
+.loading { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+.sk-row { height: 160rpx; }
+.foot { position: fixed; left: 0; right: 0; bottom: 0; padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)); background: #fff; box-shadow: 0 -4rpx 16rpx rgba(0,0,0,0.05); }

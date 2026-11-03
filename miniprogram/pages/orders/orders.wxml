@@ -1,0 +1,43 @@
+<view class="page">
+  <view class="tabs">
+    <view class="tab {{tab==='UNPAID'?'on':''}}" data-tab="UNPAID" bindtap="onTab">待支付</view>
+    <view class="tab {{tab==='ONGOING'?'on':''}}" data-tab="ONGOING" bindtap="onTab">进行中</view>
+    <view class="tab {{tab==='DONE'?'on':''}}" data-tab="DONE" bindtap="onTab">已完成</view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <view class="skeleton sk-row" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+  </view>
+
+  <view class="list" wx:elif="{{list.length}}">
+    <view wx:for="{{list}}" wx:key="id" class="card m16 o" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="row top">
+        <text class="store text-strong text-ellipsis">{{item.storeName}}</text>
+        <text class="status {{item.status}}">{{item.statusLabel || ''}}</text>
+      </view>
+      <view class="items">
+        <view wx:for="{{item.items}}" wx:key="productId" wx:for-item="it" class="it">
+          <view class="it-m">
+            <text class="text-strong text-ellipsis">{{it.productName}}</text>
+            <text class="text-sub text-sm" wx:if="{{it.specText || it.topText}}">{{it.specText}}{{it.specText && it.topText ? ' / ' : ''}}{{it.topText}}</text>
+          </view>
+          <text class="text-sub">x{{it.quantity}}</text>
+        </view>
+      </view>
+      <view class="row total">
+        <text class="text-sub">共 {{item._totalQty || 0}} 件，实付</text>
+        <text class="text-primary text-strong text-lg">¥{{item.payAmount/100}}</text>
+      </view>
+      <view class="row foot" wx:if="{{tab === 'UNPAID'}}">
+        <text class="cd text-sub text-sm">{{item.status === 'PENDING_PAYMENT' ? (cd[item.id] ? '剩余 ' + cd[item.id] : '') : ''}}</text>
+        <view class="btns">
+          <view class="btn btn-line" data-id="{{item.id}}" catchtap="onCancel">取消</view>
+          <view class="btn btn-primary" data-id="{{item.id}}" catchtap="onPay">去支付</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <empty wx:else text="暂无订单" icon="📋" />
+  <view class="tabbar-spacer"></view>
+</view>

@@ -1,0 +1,13 @@
+.page { padding: 16rpx 0 40rpx; }
+.list { display: flex; flex-direction: column; gap: 16rpx; }
+.m16 { margin: 0 16rpx; }
+.cp { display: flex; align-items: center; padding: 20rpx; }
+.cp.off { opacity: 0.7; }
+.cp-l { width: 200rpx; text-align: center; }
+.cp-amt { font-size: 48rpx; }
+.cp-cond { margin-top: 6rpx; }
+.cp-m { flex: 1; min-width: 0; padding: 0 16rpx; }
+.cp-r { width: 200rpx; }
+.cp-r .btn { height: 64rpx; line-height: 64rpx; font-size: 26rpx; }
+.loading { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+.sk-row { height: 180rpx; }

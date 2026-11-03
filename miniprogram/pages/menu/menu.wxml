@@ -1,0 +1,63 @@
+<view class="page" wx:if="{{store}}">
+  <view class="head" bindtap="goStore">
+    <text class="head-loc">📍</text>
+    <text class="head-name text-ellipsis">{{store.name}}</text>
+    <text class="head-arrow">更换 ›</text>
+  </view>
+
+  <view class="body" wx:if="{{!loading}}">
+    <scroll-view class="cat" scroll-y>
+      <view wx:for="{{categories}}" wx:key="id"
+            class="cat-item {{currentCat === index ? 'on' : ''}}"
+            data-index="{{index}}" bindtap="onCatTap">
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+
+    <scroll-view class="list-scroll" scroll-y scroll-into-view="{{intoView}}" scroll-with-animation
+                 enhanced bindscroll="onListScroll" upper-threshold="0" lower-threshold="0">
+      <block wx:for="{{categories}}" wx:key="id" wx:for-item="cat">
+        <view class="sec" id="cat-{{cat.id}}">
+          <view class="sec-title">{{cat.name}}</view>
+          <view wx:for="{{grouped[cat.id]}}" wx:key="id" wx:for-item="p"
+                class="p-card {{p.available ? '' : 'off'}}"
+                data-id="{{p.id}}" bindtap="goProduct">
+            <view class="p-img">
+              <view wx:if="{{!p.image || imgErr[p.id]}}" class="ph">{{p._ph.emoji}}</view>
+              <image wx:else src="{{p.image}}" mode="aspectFill" data-id="{{p.id}}" binderror="onImgErr" />
+            </view>
+            <view class="p-info">
+              <view class="p-name text-strong text-ellipsis">{{p.name}}</view>
+              <view class="p-desc text-sub text-sm text-ellipsis-2">{{p.description}}</view>
+              <view class="p-meta">
+                <text class="p-price text-primary text-strong">¥{{p.storePrice/100}}</text>
+                <text class="p-cal text-mute text-xs">{{p.calories}} kcal</text>
+                <text class="p-sales text-mute text-xs">已售 {{p.sales}}</text>
+              </view>
+              <view wx:if="{{!p.available}}" class="p-so text-xs">{{p.soldOutReason || '已售罄'}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="pad-bottom"></view>
+    </scroll-view>
+  </view>
+
+  <view class="loading" wx:elif="{{loading}}">
+    <view class="skeleton sk-block" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this"></view>
+  </view>
+
+  <!-- 底部购物车栏 -->
+  <view class="cart-bar safe-bottom" wx:if="{{!cartEmpty}}">
+    <view class="cart-bar-l" bindtap="goCart">
+      <view class="cart-ico">🛒</view>
+      <view class="cart-info">
+        <view class="cart-qty text-strong">{{cart.totalQuantity}} 件</view>
+        <view class="cart-sum">合计 ¥{{cart.totalAmount/100}}</view>
+      </view>
+    </view>
+    <view class="cart-bar-r" bindtap="goCart">去结算 ›</view>
+  </view>
+  <view class="tabbar-spacer" wx:if="{{cartEmpty}}"></view>
+</view>
+<empty wx:else text="请先选择门店" icon="📍" buttonText="去选门店" />

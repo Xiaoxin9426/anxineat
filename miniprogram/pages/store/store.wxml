@@ -1,0 +1,55 @@
+<view class="page">
+  <view class="head">
+    <view class="search">
+      <text class="ic">🔍</text>
+      <input class="ipt" placeholder="搜索门店" value="{{keyword}}" bindinput="onSearch" bindconfirm="onSearch" />
+      <text wx:if="{{keyword}}" class="clr" bindtap="onClearSearch">×</text>
+    </view>
+    <view class="locate" bindtap="onLocate">
+      <text class="locate-ic">{{locating ? '⏳' : '📍'}}</text>
+      <text>{{locating ? '定位中' : '附近门店'}}</text>
+    </view>
+  </view>
+
+  <view class="city text-sub text-sm">当前定位：{{city}}</view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <view class="skeleton sk-card" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+  </view>
+
+  <view class="err" wx:elif="{{error}}">
+    <view class="err-ic">📡</view>
+    <view class="err-title text-strong">门店加载失败</view>
+    <view class="err-msg text-sub">{{error}}</view>
+    <button class="err-retry" bindtap="onRetry">重试</button>
+  </view>
+
+  <view class="list" wx:elif="{{stores.length}}">
+    <view wx:for="{{stores}}" wx:key="id"
+          class="store card {{item.businessStatus === 0 ? 'disabled' : ''}} {{item.id === currentStoreId ? 'on' : ''}}"
+          data-id="{{item.id}}" bindtap="onPick">
+      <view class="row top">
+        <text class="name text-strong text-ellipsis">{{item.name}}</text>
+        <text class="status {{item.openNow ? 'ok' : 'off'}}">{{item.openNow ? '营业中' : '休息中'}}</text>
+      </view>
+      <view class="addr text-sub text-sm text-ellipsis">📍 {{item.address}}</view>
+      <view class="meta">
+        <text wx:if="{{item.supportPickup}}" class="tag">自取</text>
+        <text wx:if="{{item.supportDelivery}}" class="tag">外卖</text>
+        <text class="tag tag-ghost">起送 {{priceText(item.minDeliveryAmount, false)}}</text>
+        <text wx:if="{{item.deliveryFee > 0}}" class="tag tag-ghost">配送 {{priceText(item.deliveryFee, false)}}</text>
+      </view>
+      <view class="foot">
+        <view class="left text-sub text-sm">
+          <text wx:if="{{item.distanceKm}}">距离 {{distanceText(item.distanceKm)}} · </text>
+          <text>{{item.todayHours}}</text>
+        </view>
+        <text class="go">›</text>
+      </view>
+      <view wx:if="{{!item.openNow && item.closedReason}}" class="reason text-xs text-sub">{{item.closedReason}}</view>
+    </view>
+  </view>
+
+  <empty wx:else text="附近暂无门店" icon="🫧" />
+  <view class="tabbar-spacer"></view>
+</view>

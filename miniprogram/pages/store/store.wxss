@@ -1,0 +1,47 @@
+.page { padding: 24rpx; }
+.head { display: flex; align-items: center; gap: 16rpx; }
+.search {
+  flex: 1; display: flex; align-items: center; background: #fff; border-radius: 999rpx;
+  padding: 0 20rpx; height: 72rpx; box-shadow: var(--shadow);
+}
+.search .ic { font-size: 28rpx; margin-right: 8rpx; color: var(--text-mute); }
+.search .ipt { flex: 1; font-size: 26rpx; }
+.search .clr { color: var(--text-mute); padding: 0 8rpx; font-size: 32rpx; }
+.locate {
+  display: flex; align-items: center; gap: 6rpx; padding: 0 16rpx; height: 72rpx;
+  background: var(--primary-light); color: var(--primary); border-radius: 999rpx; font-size: 24rpx;
+}
+.locate-ic { font-size: 26rpx; }
+.city { padding: 16rpx 4rpx; }
+
+.loading { display: flex; flex-direction: column; gap: 16rpx; padding-top: 16rpx; }
+.sk-card { height: 200rpx; }
+
+.list { display: flex; flex-direction: column; gap: 20rpx; }
+.store { padding: 24rpx; }
+.store.disabled { opacity: 0.55; }
+.store.on { border: 2rpx solid var(--primary); }
+.row.top { display: flex; align-items: center; justify-content: space-between; }
+.name { font-size: 30rpx; flex: 1; min-width: 0; margin-right: 12rpx; }
+.status { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 8rpx; }
+.status.ok { background: #E6F4EA; color: var(--success); }
+.status.off { background: #FFEBEE; color: var(--danger); }
+.addr { margin-top: 8rpx; }
+.meta { display: flex; flex-wrap: wrap; gap: 8rpx; margin-top: 12rpx; }
+.foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12rpx; }
+.go { font-size: 32rpx; color: var(--text-mute); }
+.reason { margin-top: 8rpx; }
+
+/* 加载失败错误态（真机连不上后端时的可行动提示） */
+.err {
+  margin-top: 32rpx; padding: 48rpx 32rpx; background: #fff; border-radius: 20rpx;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 16rpx;
+  text-align: center;
+}
+.err-ic { font-size: 72rpx; }
+.err-title { font-size: 30rpx; }
+.err-msg { font-size: 24rpx; line-height: 1.7; word-break: break-all; }
+.err-retry {
+  margin-top: 8rpx; width: 240rpx; height: 72rpx; line-height: 72rpx; font-size: 28rpx;
+  background: var(--primary); color: #fff; border-radius: 999rpx; padding: 0;
+}

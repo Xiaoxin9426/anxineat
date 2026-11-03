@@ -1,0 +1,45 @@
+<wxs module="statusLabel" src="../../utils/filter.wxs"></wxs>
+<view class="page" wx:if="{{order}}">
+  <view class="hero" wx:if="{{success}}">
+    <view class="big-emoji">🎉</view>
+    <view class="big-title">支付成功</view>
+    <view class="big-sub" wx:if="{{cancelled}}">订单已取消</view>
+    <view class="big-sub" wx:elif="{{order.status === 'PENDING_PAYMENT'}}">等待支付结果确认</view>
+    <view class="big-sub" wx:else>门店将尽快为你准备</view>
+  </view>
+  <view class="hero fail" wx:else>
+    <view class="big-emoji">😢</view>
+    <view class="big-title">{{cancelled ? '订单已取消' : '支付未成功'}}</view>
+    <view class="big-sub">{{cancelled ? '已为你释放券与库存' : '可重新发起支付'}}</view>
+  </view>
+
+  <view class="card m24" wx:if="{{success && order.pickupCode}}">
+    <view class="pick-title">取餐码</view>
+    <view class="pick-code" bindtap="zoom">{{order.pickupCode}}</view>
+    <view class="pick-tip text-sub text-sm">点击放大 · 到店出示给店员核销</view>
+  </view>
+
+  <view class="card m24">
+    <view class="row kv"><text>订单号</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.orderNo}}</text></view>
+    <view class="row kv"><text>门店</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.storeName}}</text></view>
+    <view class="row kv"><text>金额</text><text class="text-primary text-strong">¥{{order.payAmount/100}}</text></view>
+    <view class="row kv"><text>状态</text><text>{{order.statusLabel || statusLabel(order.status)}}</text></view>
+  </view>
+
+  <view class="actions m24">
+    <view wx:if="{{!success && !cancelled}}" class="btn btn-primary" bindtap="retry">重新支付</view>
+    <view class="btn {{success ? 'btn-primary' : 'btn-line'}}" bindtap="goOrder">{{success ? '查看订单详情' : '查看订单'}}</view>
+    <view class="btn btn-line" bindtap="goHome">返回首页</view>
+  </view>
+
+  <view class="zoom-mask" wx:if="{{showZoom}}" bindtap="unzoom">
+    <view class="zoom-box">
+      <view class="zoom-code">{{order.pickupCode}}</view>
+      <view class="text-sub mt-12">取餐码</view>
+    </view>
+  </view>
+</view>
+
+<view class="loading" wx:elif="{{loading}}">
+  <view class="skeleton sk-block"></view>
+</view>

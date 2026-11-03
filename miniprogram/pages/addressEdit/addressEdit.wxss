@@ -1,0 +1,12 @@
+.page { padding: 0 0 40rpx; }
+.m16 { margin: 16rpx; }
+.form { padding: 8rpx 24rpx; }
+.row { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row.top { border-bottom: none; padding: 0; justify-content: space-between; }
+.lbl { width: 140rpx; color: var(--text-sub); font-size: 26rpx; }
+.ipt { flex: 1; font-size: 28rpx; }
+.tags { display: flex; gap: 12rpx; margin-top: 12rpx; }
+.tag-item { padding: 10rpx 24rpx; background: #F0F1F4; border-radius: 999rpx; font-size: 24rpx; color: var(--text-sub); }
+.tag-item.on { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.foot { position: fixed; left: 0; right: 0; bottom: 0; padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)); background: #fff; box-shadow: 0 -4rpx 16rpx rgba(0,0,0,0.05); }

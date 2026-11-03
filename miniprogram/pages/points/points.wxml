@@ -1,0 +1,50 @@
+<view class="page" wx:if="{{user}}">
+  <view class="hero">
+    <view class="bal text-strong">{{user.pointBalance}}</view>
+    <view class="bal-lbl">可用积分</view>
+    <view class="row meta">
+      <view class="meta-l">
+        <text class="text-mute text-sm">累计获得</text>
+        <text class="text-strong">{{user.pointTotal || 0}}</text>
+      </view>
+      <view class="meta-c">
+        <text class="text-mute text-sm">会员等级</text>
+        <text class="text-strong">{{user.levelName || '普通会员'}}</text>
+      </view>
+      <view class="meta-r">
+        <view class="btn {{signed ? 'btn-line' : 'btn-primary'}} sign-btn" bindtap="onSignin">
+          {{signed ? '已签到' : '每日签到'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card m24">
+    <view class="section-title-sm">积分兑换</view>
+    <view class="ex-row" wx:for="{{exchange}}" wx:key="templateId">
+      <view class="ex-l">
+        <text class="text-strong text-ellipsis">{{item.name}}</text>
+        <text class="text-mute text-xs">{{item.amount ? '价值 ¥' + item.amount/100 : '积分兑换'}}</text>
+      </view>
+      <view class="btn btn-ghost ex-btn {{item.canExchange ? '' : 'disabled'}}" data-id="{{item.templateId}}" bindtap="onExchange">
+        {{item.pointCost}} 积分
+      </view>
+    </view>
+  </view>
+
+  <view class="card m24">
+    <view class="section-title-sm">积分明细</view>
+    <view wx:if="{{!records.length}}" class="text-sub text-sm" style="text-align:center;padding:24rpx 0">暂无明细</view>
+    <view wx:for="{{records}}" wx:key="id" class="rec">
+      <view class="rec-l">
+        <view class="text-strong">{{item.typeLabel || item.type}}</view>
+        <view class="text-mute text-xs">{{item.createdAt}} · {{item.remark || ''}}</view>
+      </view>
+      <view class="rec-r">
+        <text class="text-strong {{item.amount >= 0 ? 'text-primary' : ''}}">{{item.amount > 0 ? '+' : ''}}{{item.amount}}</text>
+        <text class="text-mute text-xs">余 {{item.balanceAfter}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="tabbar-spacer"></view>
+</view>

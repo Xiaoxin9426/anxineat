@@ -1,0 +1,26 @@
+.page { padding: 0 0 40rpx; }
+.tabs { display: flex; background: #fff; border-bottom: 1rpx solid var(--border); position: sticky; top: 0; z-index: 9; }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 28rpx; color: var(--text-sub); position: relative; }
+.tab.on { color: var(--primary); font-weight: 600; }
+.tab.on::after { content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 48rpx; height: 4rpx; background: var(--primary); border-radius: 2rpx; }
+.loading { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+.sk-row { height: 200rpx; }
+.list { display: flex; flex-direction: column; gap: 16rpx; padding-top: 16rpx; }
+.m16 { margin: 0 16rpx; }
+.o { padding: 20rpx; }
+.row { display: flex; align-items: center; }
+.row.top { justify-content: space-between; }
+.store { flex: 1; min-width: 0; font-size: 28rpx; }
+.status { font-size: 24rpx; }
+.status.PENDING_PAYMENT { color: var(--primary); }
+.status.PAID, .status.MAKING, .status.READY, .status.DELIVERING { color: var(--warning); }
+.status.COMPLETED { color: var(--success); }
+.status.CANCELLED, .status.REFUNDED { color: var(--text-mute); }
+.items { padding: 12rpx 0; }
+.it { display: flex; align-items: center; padding: 6rpx 0; }
+.it-m { flex: 1; min-width: 0; padding-right: 12rpx; }
+.row.total { justify-content: flex-end; gap: 12rpx; padding-top: 8rpx; border-top: 1rpx dashed var(--border); }
+.row.foot { justify-content: space-between; padding-top: 16rpx; }
+.btns { display: flex; gap: 16rpx; }
+.btns .btn { padding: 0 24rpx; height: 56rpx; line-height: 52rpx; font-size: 24rpx; }
+.cd { font-size: 24rpx; }

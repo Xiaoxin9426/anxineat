@@ -1,0 +1,73 @@
+<wxs module="statusLabel" src="../../utils/filter.wxs"></wxs>
+<view class="page" wx:if="{{order}}">
+  <view class="hero">
+    <view class="status text-strong">{{order.statusLabel || statusLabel(order.status)}}</view>
+    <view class="hint text-sm" wx:if="{{order.status === 'PENDING_PAYMENT'}}">支付剩余 {{countdown}}</view>
+    <view class="hint text-sm" wx:elif="{{order.status === 'READY' && order.orderType==='PICKUP'}}">到店出示取餐码</view>
+    <view class="hint text-sm" wx:elif="{{order.status === 'DELIVERING'}}">骑手正在配送</view>
+  </view>
+
+  <view class="card m24 pick" wx:if="{{order.pickupCode && (order.status === 'READY' || order.status === 'PAID' || order.status === 'MAKING' || order.status === 'PENDING_PAYMENT') && order.orderType==='PICKUP'}}">
+    <view class="text-sub text-sm">取餐码</view>
+    <view class="code" bindtap="zoom">{{order.pickupCode}}</view>
+  </view>
+
+  <view class="card m24">
+    <view class="kv"><text>订单号</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.orderNo}}</text></view>
+    <view class="kv"><text>门店</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.storeName}}</text></view>
+    <view class="kv"><text>下单时间</text><text>{{order.createdAt}}</text></view>
+    <view class="kv" wx:if="{{order.expectTime}}"><text>期望时间</text><text>{{order.expectTime}}</text></view>
+    <view class="kv" wx:if="{{order.addressSnapshot}}"><text>配送地址</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.addressSnapshot}}</text></view>
+    <view class="kv" wx:if="{{order.remark}}"><text>备注</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.remark}}</text></view>
+  </view>
+
+  <view class="card m24">
+    <view class="section-title-sm">商品明细</view>
+    <view wx:for="{{items}}" wx:key="productId" class="line">
+      <view class="line-m">
+        <view class="text-strong text-ellipsis">{{item.productName}}</view>
+        <view class="text-sub text-sm text-ellipsis" wx:if="{{item.specText}}">{{item.specText}}</view>
+        <view class="text-sub text-xs" wx:if="{{item.topText}}">+ {{item.topText}}</view>
+      </view>
+      <view class="line-r">
+        <text class="text-sub">x{{item.quantity}}</text>
+        <text class="text-primary text-sm">¥{{item.totalPrice/100}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card m24">
+    <view class="section-title-sm">金额明细</view>
+    <view class="kv"><text>商品总额</text><text>¥{{order.totalAmount/100}}</text></view>
+    <view class="kv" wx:if="{{order.levelDiscountAmount > 0}}"><text>会员折扣</text><text class="text-primary">-¥{{order.levelDiscountAmount/100}}</text></view>
+    <view class="kv" wx:if="{{order.couponAmount > 0}}"><text>优惠券</text><text class="text-primary">-¥{{order.couponAmount/100}}</text></view>
+    <view class="kv" wx:if="{{order.pointAmount > 0}}"><text>积分抵扣</text><text class="text-primary">-¥{{order.pointAmount/100}}</text></view>
+    <view class="kv" wx:if="{{order.deliveryFee > 0}}"><text>配送费</text><text>¥{{order.deliveryFee/100}}</text></view>
+    <view class="kv total"><text class="text-strong">实付</text><text class="text-primary text-strong text-xl">¥{{order.payAmount/100}}</text></view>
+  </view>
+
+  <view class="card m24" wx:if="{{log.length}}">
+    <view class="section-title-sm">状态时间线</view>
+    <view wx:for="{{log}}" wx:key="createdAt" wx:for-item="lg" class="log">
+      <view class="dot"></view>
+      <view class="log-info">
+        <view class="text-strong">{{statusLabel(lg.toStatus)}}</view>
+        <view class="text-sub text-sm">{{lg.createdAt}} · {{lg.operator === 'USER' ? '用户' : (lg.operator === 'SYSTEM' ? '系统' : '门店')}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions safe-bottom">
+    <view wx:if="{{order.canCancel}}" class="btn btn-line" bindtap="onCancel">取消订单</view>
+    <view wx:if="{{order.canPay}}" class="btn btn-primary" bindtap="onPay">继续支付</view>
+    <view wx:if="{{order.status === 'COMPLETED' || order.status === 'CANCELLED'}}" class="btn btn-primary" bindtap="onReorder">再来一单</view>
+  </view>
+
+  <view class="zoom-mask" wx:if="{{showZoom}}" bindtap="unzoom">
+    <view class="zoom-box"><view class="zoom-code">{{order.pickupCode}}</view></view>
+  </view>
+</view>
+
+<view class="loading" wx:elif="{{loading}}">
+  <view class="skeleton sk-block"></view>
+</view>

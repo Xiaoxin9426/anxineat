@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{tab===item.key?'on':''}}"
+          data-tab="{{item.key}}" bindtap="onTab">{{item.label}}</view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <view class="skeleton sk-row" wx:for="{{[1,2]}}" wx:key="*this"></view>
+  </view>
+
+  <view class="list" wx:elif="{{list.length}}">
+    <view wx:for="{{list}}" wx:key="id" class="cp card m16 {{item.status==='EXPIRED'?'expired':''}}">
+      <view class="cp-l">
+        <view class="cp-amt text-primary text-strong" wx:if="{{item.type==='NO_THRESHOLD' || item.type==='FULL_REDUCTION'}}">¥{{item.amount/100}}</view>
+        <view class="cp-amt text-primary text-strong" wx:elif="{{item.type==='DISCOUNT'}}">{{item.discount/1000}}折</view>
+        <view class="cp-amt text-strong" wx:else>¥{{item.amount/100}}</view>
+        <view class="cp-cond text-sub text-xs" wx:if="{{item.minAmount > 0}}">满 ¥{{item.minAmount/100}}</view>
+        <view class="cp-cond text-sub text-xs" wx:else>无门槛</view>
+      </view>
+      <view class="cp-m">
+        <view class="text-strong text-ellipsis">{{item.name}}</view>
+        <view class="text-mute text-xs">{{item.startTime}} ~ {{item.endTime}}</view>
+        <view class="text-mute text-xs" wx:if="{{item.channels}}">支持：{{item.channels}}</view>
+      </view>
+      <view class="cp-r">
+        <view class="status {{item.status}}">{{item.statusLabel || item.status}}</view>
+      </view>
+    </view>
+  </view>
+
+  <empty wx:else text="暂无优惠券" icon="🎟️" />
+</view>

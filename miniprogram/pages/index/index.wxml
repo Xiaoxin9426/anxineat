@@ -1,0 +1,109 @@
+<view class="page">
+  <!-- 头部背景 -->
+  <view class="hero">
+    <view class="hero-row">
+      <view class="loc" bindtap="goStore">
+        <text class="loc-pin">📍</text>
+        <text class="loc-name text-ellipsis">{{currentStore ? currentStore.name : '选择门店'}}</text>
+        <text class="loc-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 横幅 -->
+    <swiper wx:if="{{banners.length}}" class="banner" indicator-dots autoplay circular interval="3500">
+      <swiper-item wx:for="{{banners}}" wx:key="id">
+        <view class="bn" style="background:{{item._ph.bg}}"
+              data-type="{{item.linkType}}" data-value="{{item.linkValue}}" bindtap="onBannerTap">
+          <text class="bn-emoji">{{item._ph.emoji}}</text>
+          <text class="bn-text">{{item.title}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+
+    <!-- 会员卡 -->
+    <view class="vip card">
+      <view class="vip-l">
+        <view class="vip-name">
+          <text class="vip-greet">{{user ? user.nickname : '访客'}}</text>
+          <text class="tag tag-accent" wx:if="{{user}}">{{user.levelName || '普通会员'}}</text>
+        </view>
+        <view class="vip-points">
+          <text class="num">{{user ? user.pointBalance : 0}}</text>
+          <text class="lbl">积分</text>
+        </view>
+        <view class="vip-bar" wx:if="{{user && user.nextLevelMinAmount}}">
+          <view class="vip-bar-bg">
+            <view class="vip-bar-fg" style="width:{{user.totalAmount / user.nextLevelMinAmount * 100}}%"></view>
+          </view>
+          <view class="vip-bar-tip text-xs text-sub">距 {{user.nextLevelName || '下一级'}} 还差 {{(user.nextLevelMinAmount - user.totalAmount)/100}} 元</view>
+        </view>
+      </view>
+      <view class="vip-r" bindtap="onSignin">
+        <view class="sign {{signed ? 'signed' : ''}}">
+          <text class="sign-ico">📅</text>
+          <text>{{signed ? '已签到' : '签到'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 立即点餐 -->
+  <view class="cta-wrap">
+    <view class="cta" bindtap="goMenu">
+      <text class="cta-emoji">🥤</text>
+      <text class="cta-text">立即点餐</text>
+      <text class="cta-arrow">→</text>
+    </view>
+  </view>
+
+  <!-- 活动入口 -->
+  <view class="entry card">
+    <view class="entry-item" bindtap="goStore">
+      <view class="entry-ico" style="background:#FFE6EC">📍</view>
+      <text>选门店</text>
+    </view>
+    <view class="entry-item" bindtap="onGotoCoupons">
+      <view class="entry-ico" style="background:#FFF1B0">🎁</view>
+      <text>领券</text>
+    </view>
+    <view class="entry-item" bindtap="onSignin">
+      <view class="entry-ico" style="background:#E0F4FF">📅</view>
+      <text>签到</text>
+    </view>
+    <view class="entry-item" bindtap="onGotoMyCoupons">
+      <view class="entry-ico" style="background:#E8F5E9">🎟️</view>
+      <text>我的券</text>
+    </view>
+  </view>
+
+  <view class="section-title">为您推荐</view>
+  <view class="rec-card card">
+    <view class="rec-row">
+      <text class="rec-emoji">🍋</text>
+      <view class="rec-info">
+        <view class="rec-name">冰鲜柠檬水</view>
+        <view class="rec-sub text-sub text-sm">鲜切柠檬片 + 茉莉绿茶</view>
+      </view>
+      <text class="rec-price text-primary">¥4.00</text>
+    </view>
+    <view class="rec-row">
+      <text class="rec-emoji">🧋</text>
+      <view class="rec-info">
+        <view class="rec-name">珍珠奶茶</view>
+        <view class="rec-sub text-sub text-sm">经典红茶奶茶 + 手煮黑糖珍珠</view>
+      </view>
+      <text class="rec-price text-primary">¥7.00</text>
+    </view>
+    <view class="rec-row">
+      <text class="rec-emoji">🥭</text>
+      <view class="rec-info">
+        <view class="rec-name">满杯百香果</view>
+        <view class="rec-sub text-sub text-sm">整颗百香果 + 绿茶</view>
+      </view>
+      <text class="rec-price text-primary">¥8.00</text>
+    </view>
+    <view class="rec-more" bindtap="goMenu">去点单 ›</view>
+  </view>
+
+  <view class="tabbar-spacer"></view>
+</view>

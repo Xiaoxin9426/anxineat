@@ -1,0 +1,17 @@
+/**
+ * wxs 工具：模板里可以使用的简易函数
+ */
+var statusLabel = function (s) {
+  var map = {
+    PENDING_PAYMENT: '待支付',
+    PAID: '已支付',
+    MAKING: '制作中',
+    READY: '待取餐',
+    DELIVERING: '配送中',
+    COMPLETED: '已完成',
+    CANCELLED: '已取消',
+    REFUNDED: '已退款'
+  }
+  return map[s] || s || ''
+}
+module.exports = { statusLabel: statusLabel }

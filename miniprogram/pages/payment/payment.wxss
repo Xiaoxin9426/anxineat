@@ -1,0 +1,19 @@
+.page { padding: 0 0 40rpx; }
+.hero {
+  background: linear-gradient(180deg, #E4002B 0%, #FF5B5B 100%);
+  color: #fff; padding: 60rpx 24rpx 80rpx; text-align: center;
+}
+.amount { font-size: 80rpx; }
+.order-no { margin-top: 8rpx; opacity: 0.85; }
+.expire { margin-top: 16rpx; font-size: 28rpx; }
+.m24 { margin: 24rpx; }
+.card { padding: 24rpx; }
+.row { display: flex; align-items: center; }
+.kv { justify-content: space-between; padding: 8rpx 0; font-size: 26rpx; }
+.notice-title { font-size: 26rpx; font-weight: 600; color: var(--warning); margin-bottom: 8rpx; }
+.notice { font-size: 24rpx; color: var(--text-sub); white-space: pre-line; line-height: 1.7; }
+.actions { display: flex; flex-direction: column; gap: 16rpx; }
+.btn { height: 88rpx; line-height: 88rpx; font-size: 30rpx; font-weight: 600; text-align: center; border-radius: 999rpx; }
+.cancel { text-align: center; color: var(--text-mute); font-size: 24rpx; padding: 24rpx; }
+.loading { padding: 24rpx; }
+.sk-block { height: 200rpx; }

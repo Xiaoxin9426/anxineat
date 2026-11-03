@@ -1,0 +1,78 @@
+<view class="page" wx:if="{{detail}}">
+  <view class="hero">
+    <view class="hero-img" style="background:{{detail._ph.bg}}">
+      <text class="ph ph-lg" wx:if="{{!detail.image || imgErr}}">{{detail._ph.emoji}}</text>
+      <image wx:else src="{{detail.image}}" mode="aspectFill" binderror="onImgErr" />
+    </view>
+    <view class="hero-info">
+      <view class="name text-strong">{{detail.name}}</view>
+      <view class="desc text-sub text-sm">{{detail.description}}</view>
+      <view class="row meta">
+        <text class="price text-primary text-strong">¥{{detail.storePrice/100}}</text>
+        <text class="text-mute text-xs">/{{detail.calories}} kcal · 已售 {{detail.sales}}</text>
+      </view>
+      <view wx:if="{{!detail.available}}" class="so text-xs">{{detail.soldOutReason || '已售罄'}}</view>
+    </view>
+  </view>
+
+  <view class="card m24" wx:for="{{detail.specGroups}}" wx:key="id" wx:for-item="g">
+    <view class="grp-title">
+      <text class="text-strong">{{g.name}}</text>
+      <text wx:if="{{g.isRequired}}" class="tag">必选</text>
+      <text wx:else class="tag tag-ghost">可选</text>
+      <text wx:if="{{g.code === 'CUP'}}" class="tag tag-accent">影响库存</text>
+    </view>
+    <view class="opt-row">
+      <view wx:for="{{g.options}}" wx:key="id" wx:for-item="o"
+            class="opt {{selectedSpecs[g.id] === o.id ? 'on' : ''}} {{o.extraPrice ? 'has' : ''}}"
+            data-group-id="{{g.id}}" data-option-id="{{o.id}}" bindtap="onSelectSpec">
+        <text>{{o.label}}</text>
+        <text wx:if="{{o.extraPrice > 0}}" class="text-xs text-primary">+¥{{o.extraPrice/100}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card m24" wx:if="{{toppings.length}}">
+    <view class="grp-title">
+      <text class="text-strong">加料</text>
+      <text class="text-mute text-xs">最多选至上限</text>
+    </view>
+    <view class="top-row" wx:for="{{toppings}}" wx:key="id" wx:for-item="t">
+      <view class="top-info">
+        <text class="text-strong">{{t.name}}</text>
+        <text class="text-primary text-sm">+¥{{t.price/100}}</text>
+      </view>
+      <view class="stepper">
+        <view class="op {{t._count <= 0 ? 'disabled' : ''}}" data-id="{{t.id}}" bindtap="onTopDec">−</view>
+        <text class="val">{{t._count}}</text>
+        <view class="op {{t._count >= t.maxCount ? 'disabled' : ''}}" data-id="{{t.id}}" bindtap="onTopInc">+</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tabbar-spacer"></view>
+
+  <view class="foot safe-bottom">
+    <view class="qty">
+      <view class="stepper">
+        <view class="op {{quantity <= 1 ? 'disabled' : ''}}" bindtap="onDec">−</view>
+        <text class="val">{{quantity}}</text>
+        <view class="op {{quantity >= 99 ? 'disabled' : ''}}" bindtap="onInc">+</view>
+      </view>
+    </view>
+    <view class="foot-r">
+      <view class="foot-price">
+        <text class="text-primary text-strong text-lg">¥{{totalPrice/100}}</text>
+      </view>
+      <view class="btn-primary {{!detail.available || !requiredReady ? 'disabled' : ''}}" bindtap="onAdd">
+        {{!detail.available ? '不可加购' : '加入购物车'}}
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading">
+  <view class="skeleton sk-hero"></view>
+  <view class="skeleton sk-block mt-16" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+</view>
+<empty wx:else text="商品不存在" icon="🥲" />

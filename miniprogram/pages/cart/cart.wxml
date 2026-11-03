@@ -1,0 +1,52 @@
+<view class="page" wx:if="{{cart}}">
+  <view class="head">
+    <text class="head-loc">📍</text>
+    <text class="head-name text-ellipsis">{{store ? store.name : '当前门店'}}</text>
+    <view class="head-clear" bindtap="onClear" wx:if="{{cart.items.length}}">清空</view>
+  </view>
+
+  <view class="warning" wx:if="{{unavail.length}}">
+    ⚠ {{unavail.length}} 件商品当前不可用，已为你暂留，请删除后再结算
+  </view>
+
+  <view class="list">
+    <view wx:for="{{cart.items}}" wx:key="id"
+          class="item card {{!item.available ? 'off' : ''}}">
+      <view class="item-l">
+        <text class="item-emoji">🥤</text>
+      </view>
+      <view class="item-m">
+        <view class="item-name text-strong">{{item.productName}}</view>
+        <view class="item-spec text-sub text-sm" wx:if="{{item.specText}}">{{item.specText}}</view>
+        <view class="item-spec text-sub text-sm" wx:if="{{item.topText}}">+ {{item.topText}}</view>
+        <view class="item-why text-xs" wx:if="{{!item.available}}">{{item.unavailableReason || '当前不可用'}}</view>
+        <view class="item-price text-primary text-strong">¥{{item.unitPrice/100}}</view>
+      </view>
+      <view class="item-r">
+        <view class="stepper">
+          <view class="op" data-id="{{item.id}}" data-op="dec" bindtap="onQty">−</view>
+          <text class="val">{{item.quantity}}</text>
+          <view class="op {{item.quantity >= item.maxQuantity ? 'disabled' : ''}}" data-id="{{item.id}}" data-op="inc" bindtap="onQty">+</view>
+        </view>
+        <view class="del" data-id="{{item.id}}" bindtap="onDelete">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-box" wx:if="{{!cart.items.length}}">
+    <empty text="购物车空空如也" icon="🛒" buttonText="去点单" />
+  </view>
+
+  <view class="tabbar-spacer"></view>
+
+  <view class="foot safe-bottom" wx:if="{{cart.items.length}}">
+    <view class="foot-l">
+      <text class="text-sub">合计</text>
+      <text class="text-primary text-strong text-xl">¥{{cart.totalAmount/100}}</text>
+    </view>
+    <view class="foot-r btn-primary" bindtap="goConfirm">去结算</view>
+  </view>
+</view>
+<view class="loading" wx:elif="{{loading}}">
+  <view class="skeleton sk-row" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+</view>

@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>安心饮 · 商家管理后台</title>
+<style>
+/* ==========================================================================
+   安心饮商家管理后台 —— 样式表
+   设计基调：深色侧边栏 + 浅色内容区，主色沿用小程序端品牌红 #E4002B
+   ========================================================================== */
+
+:root{
+  --primary:#E4002B;
+  --primary-dark:#B80022;
+  --primary-soft:#FDE7EB;
+  --sidebar:#1D1D24;
+  --sidebar-hover:#2A2A34;
+  --sidebar-text:#B9BDC7;
+  --bg:#F4F5F7;
+  --card:#FFFFFF;
+  --text:#1F2126;
+  --text-2:#5A6070;
+  --muted:#8A8F99;
+  --border:#EAECF0;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06);
+  --shadow-lg:0 12px 40px rgba(16,24,40,.16);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;outline:none}
+button{cursor:pointer;border:none;background:none}
+table{border-collapse:collapse;width:100%}
+.hidden{display:none !important}
+
+/* ---------------- 通用控件 ---------------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:34px;padding:0 14px;border-radius:var(--radius-sm);
+  background:#fff;border:1px solid var(--border);color:var(--text-2);
+  font-size:13px;font-weight:500;transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:#D5D8DE;background:#FAFBFC;color:var(--text)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff}
+.btn-danger{background:#fff;border-color:#F3C6CD;color:var(--primary)}
+.btn-danger:hover{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.btn-sm{height:28px;padding:0 10px;font-size:12px;border-radius:6px}
+.btn-ghost{border-color:transparent;background:transparent}
+.btn-ghost:hover{background:#F2F3F5}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.input,.select{
+  height:34px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:#fff;transition:.15s;min-width:0;
+}
+.input:focus,.select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(228,0,43,.09)}
+.input-sm{height:28px;padding:0 8px;font-size:13px;border-radius:6px}
+.input-money{text-align:right;font-variant-numeric:tabular-nums}
+.select{padding-right:26px;appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M1 1l4 4 4-4' fill='none' stroke='%238A8F99' stroke-width='1.4' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 9px center}
+
+/* 开关 */
+.switch{position:relative;display:inline-block;width:40px;height:22px;flex:none}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch span{position:absolute;inset:0;background:#D4D7DD;border-radius:22px;transition:.2s}
+.switch span::after{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked + span{background:var(--primary)}
+.switch input:checked + span::after{transform:translateX(18px)}
+
+/* ---------------- 布局 ---------------- */
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:216px;flex:none;background:var(--sidebar);position:fixed;top:0;bottom:0;left:0;z-index:30;
+  display:flex;flex-direction:column;
+}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 18px 18px}
+.brand-logo{
+  width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#FF5A6E);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex:none;
+}
+.brand-text strong{display:block;color:#fff;font-size:15px;letter-spacing:.5px;line-height:1.2}
+.brand-text small{color:#7A7F8B;font-size:11px;letter-spacing:1px}
+.nav{padding:6px 10px;flex:1;overflow-y:auto}
+.nav-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;margin-bottom:2px;
+  border-radius:var(--radius-sm);color:var(--sidebar-text);font-size:14px;text-align:left;transition:.15s;
+}
+.nav-item:hover{background:var(--sidebar-hover);color:#fff}
+.nav-item.active{background:var(--primary);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(228,0,43,.32)}
+.nav-icon{width:18px;text-align:center;font-size:15px;flex:none}
+.nav-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:11px;min-width:18px;height:18px;
+  border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px;font-weight:600}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.25)}
+.sidebar-foot{padding:12px 14px;border-top:1px solid #2C2C36;color:#6E7380;font-size:12px}
+.sidebar-foot button{color:#9BA0AB;font-size:13px;padding:6px 0}
+.sidebar-foot button:hover{color:#fff}
+
+.main{flex:1;margin-left:216px;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  height:60px;flex:none;background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:20;
+}
+.topbar h1{font-size:17px;font-weight:600;letter-spacing:.3px}
+.topbar .spacer{flex:1}
+.store-picker{display:flex;align-items:center;gap:8px}
+.store-picker label{color:var(--muted);font-size:13px}
+.store-tag{
+  display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;
+  background:var(--primary-soft);color:var(--primary);font-size:13px;font-weight:600;
+}
+.user-chip{display:flex;align-items:center;gap:9px;padding-left:14px;border-left:1px solid var(--border)}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2A2A34,#4A4A58);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex:none}
+.user-meta strong{display:block;font-size:13px;line-height:1.25}
+.user-meta small{color:var(--muted);font-size:11px}
+.role-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600;margin-left:5px}
+.role-super{background:var(--primary-soft);color:var(--primary)}
+.role-clerk{background:#EEF1F5;color:#5A6070}
+
+.auto-refresh{display:flex;align-items:center;gap:7px;color:var(--text-2);font-size:13px;
+  padding:5px 10px;border:1px solid var(--border);border-radius:16px;background:#FAFBFC}
+.dot{width:7px;height:7px;border-radius:50%;background:#D4D7DD;flex:none}
+.dot.on{background:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,.16);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+.content{padding:20px 22px 40px;position:relative;flex:1}
+
+/* ---------------- 卡片 ---------------- */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.card-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.card-head h2{font-size:15px;font-weight:600}
+.card-head .spacer{flex:1}
+.card-head .sub{color:var(--muted);font-size:12px;font-weight:400;margin-left:8px}
+.card-body{padding:18px}
+
+/* 统计卡片 */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.stat{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;transition:.18s}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary)}
+.stat:nth-child(2)::before{background:#2563EB}
+.stat:nth-child(3)::before{background:#16A34A}
+.stat:nth-child(4)::before{background:#7C3AED}
+.stat-label{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px}
+.stat-value{font-size:27px;font-weight:700;margin-top:8px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.stat-value .unit{font-size:15px;font-weight:600;margin-right:2px}
+.stat-foot{color:var(--muted);font-size:12px;margin-top:4px}
+
+/* 状态分布条形图（纯 CSS） */
+.bar-row{display:flex;align-items:center;gap:12px;padding:7px 0}
+.bar-label{width:72px;flex:none;font-size:13px;color:var(--text-2);text-align:right}
+.bar-track{flex:1;height:12px;background:#F2F3F5;border-radius:6px;overflow:hidden;min-width:60px}
+.bar-fill{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.4,0,.2,1);min-width:2px}
+.bar-val{width:36px;flex:none;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------------- 数据看板：趋势图 / 热销 ---------------- */
+.trend-chart{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:8px}
+.trend-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.trend-val{font-size:11px;color:var(--text-2);font-variant-numeric:tabular-nums;margin-bottom:6px;white-space:nowrap}
+.trend-bar{flex:1;width:60%;max-width:34px;background:linear-gradient(180deg,#FF6B81,#E4002B);border-radius:6px 6px 0 0;transition:height .5s cubic-bezier(.4,0,.2,1);min-height:2px}
+.trend-x{font-size:12px;color:var(--text-1);margin-top:8px;font-variant-numeric:tabular-nums}
+.trend-sub{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.top-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #F2F3F5}
+.top-row:last-child{border-bottom:none}
+.top-rank{width:24px;height:24px;flex:none;border-radius:50%;background:#E4002B;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.top-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.top-qty{color:var(--text-2);font-size:13px;font-variant-numeric:tabular-nums}
+.top-amt{width:96px;text-align:right;color:var(--text-1);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------------- 表格 ---------------- */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{font-size:13px}
+thead th{
+  background:#FAFBFC;color:var(--text-2);font-weight:600;font-size:12px;letter-spacing:.3px;
+  text-align:left;padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+tbody td{padding:11px 14px;border-bottom:1px solid #F4F5F7;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background .18s}
+tbody tr:hover{background:#FAFBFD}
+.t-right{text-align:right}
+.t-center{text-align:center}
+.t-nowrap{white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* 新订单高亮 */
+@keyframes rowFlash{
+  0%{background:#FFF3C4}
+  60%{background:#FFF9E0}
+  100%{background:transparent}
+}
+tr.row-new{animation:rowFlash 5s ease-out}
+tr.row-new td:first-child{box-shadow:inset 3px 0 0 var(--primary)}
+
+/* 状态标签 */
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:11px;
+  font-size:12px;font-weight:600;white-space:nowrap}
+.tag-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+.t-PENDING_PAYMENT{background:#FEF3C7;color:#B45309}
+.t-PENDING_PAYMENT .tag-dot{background:#F59E0B}
+.t-PAID{background:#DBEAFE;color:#1D4ED8}
+.t-PAID .tag-dot{background:#2563EB}
+.t-MAKING{background:#EDE9FE;color:#6D28D9}
+.t-MAKING .tag-dot{background:#7C3AED}
+.t-READY{background:var(--primary-soft);color:var(--primary)}
+.t-READY .tag-dot{background:var(--primary)}
+.t-DELIVERING{background:#CFFAFE;color:#0E7490}
+.t-DELIVERING .tag-dot{background:#06B6D4}
+.t-COMPLETED{background:#DCFCE7;color:#15803D}
+.t-COMPLETED .tag-dot{background:#16A34A}
+.t-CANCELLED{background:#F3F4F6;color:#6B7280}
+.t-CANCELLED .tag-dot{background:#9CA3AF}
+.t-REFUNDED{background:#E5E7EB;color:#4B5563}
+.t-REFUNDED .tag-dot{background:#6B7280}
+
+.type-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600}
+.type-PICKUP{background:#EFF6FF;color:#1D4ED8}
+.type-DELIVERY{background:#ECFDF5;color:#047857}
+
+.code-chip{
+  display:inline-block;padding:2px 9px;border-radius:6px;background:#FFF7E6;border:1px dashed #F0C069;
+  color:#B45309;font-weight:700;letter-spacing:2px;font-family:ui-monospace,Menlo,Consolas,monospace
+}
+.muted{color:var(--muted)}
+.strong{font-weight:600}
+.money{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* 取餐码核销条 */
+.redeem-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:linear-gradient(135deg,#FFF5F6,#FFF9FA);border:1px solid #FBDDE2;border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:18px}
+.redeem-bar .lead{font-weight:600;display:flex;align-items:center;gap:8px}
+.redeem-bar .lead::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--primary)}
+.redeem-input{
+  width:150px;height:40px;padding:0 14px;border:1px solid #F3C6CD;border-radius:var(--radius-sm);
+  font-size:20px;font-weight:700;letter-spacing:6px;text-align:center;
+  font-family:ui-monospace,Menlo,Consolas,monospace;background:#fff
+}
+.redeem-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(228,0,43,.1)}
+
+/* 工具条 */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toolbar .grow{flex:1;min-width:120px}
+
+/* SKU 库存小行 */
+.sku-row{display:flex;align-items:center;gap:6px;padding:3px 0}
+.sku-row .sku-name{width:64px;flex:none;color:var(--text-2);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sku-row .sku-stock{width:78px;text-align:right}
+
+/* 商品详情编辑弹窗 */
+.form-scroll{max-height:60vh;overflow-y:auto;padding-right:6px}
+.pd-sec{font-size:13px;font-weight:600;color:var(--text-1);margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.pd-sec:first-child{margin-top:0}
+.pd-sec .hint{font-weight:400}
+.pd-row{display:flex;align-items:center;gap:6px;padding:3px 0;flex-wrap:nowrap}
+.pd-row .input,.pd-row .select{flex:0 0 auto}
+.pd-row .input-money{width:92px;text-align:right}
+.pd-row .pd-rm{flex:none;padding:0 10px;line-height:26px;color:var(--danger,#C0392B)}
+.pd-row .mini{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-2);white-space:nowrap}
+.pd-group{border:1px solid var(--border);border-radius:var(--radius-sm,6px);padding:8px 10px;margin-bottom:10px}
+.pd-group-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pd-group-head .input{width:150px}
+.pd-opts .pd-row{padding:2px 0}
+
+/* 分页 */
+.pager{display:flex;align-items:center;gap:10px;padding:14px 18px;border-top:1px solid var(--border);flex-wrap:wrap}
+.pager .info{color:var(--muted);font-size:13px}
+.pager .spacer{flex:1}
+
+/* 空态 */
+.empty{padding:56px 20px;text-align:center;color:var(--muted)}
+.empty-icon{font-size:40px;line-height:1;margin-bottom:12px;opacity:.35}
+.empty p{font-size:14px}
+.empty small{display:block;margin-top:6px;font-size:12px;opacity:.8}
+
+/* ---------------- 登录 ---------------- */
+.login-mask{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(1200px 600px at 20% 10%,#3A1220 0%,#15151B 55%,#0F0F14 100%)}
+.login-card{width:100%;max-width:410px;background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);padding:34px 32px 28px}
+.login-brand{text-align:center;margin-bottom:24px}
+.login-brand .brand-logo{width:52px;height:52px;border-radius:14px;font-size:21px;margin:0 auto 12px}
+.login-brand h1{font-size:20px;font-weight:700}
+.login-brand p{color:var(--muted);font-size:13px;margin-top:3px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--text-2);margin-bottom:6px;font-weight:500}
+.field .input{width:100%;height:42px}
+.login-err{min-height:20px;color:var(--primary);font-size:13px;margin-bottom:6px}
+.demo-box{margin-top:20px;padding-top:18px;border-top:1px dashed var(--border)}
+.demo-title{font-size:12px;color:var(--muted);margin-bottom:9px}
+.demo-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:.15s;background:#FAFBFC}
+.demo-item:hover{border-color:var(--primary);background:var(--primary-soft)}
+.demo-item .who{flex:1;font-size:13px}
+.demo-item .who small{display:block;color:var(--muted);font-size:11px}
+.demo-item code{font-size:12px;background:#fff;border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--text-2)}
+
+/* ---------------- Toast / Loading / Modal ---------------- */
+.toast-wrap{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;display:flex;
+  flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  display:flex;align-items:center;gap:9px;padding:10px 18px;border-radius:24px;background:#1F2126;color:#fff;
+  font-size:13px;box-shadow:var(--shadow-lg);animation:toastIn .25s ease-out;max-width:86vw
+}
+.toast.out{animation:toastOut .22s ease-in forwards}
+.toast.success{background:#15803D}
+.toast.error{background:var(--primary-dark)}
+.toast.warn{background:#B45309}
+.toast .ic{font-size:14px}
+@keyframes toastIn{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-10px) scale(.96)}}
+
+.loading-mask{position:fixed;inset:0;z-index:150;background:rgba(255,255,255,.55);backdrop-filter:blur(1.5px);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.spinner{width:34px;height:34px;border:3px solid #F0D7DC;border-top-color:var(--primary);border-radius:50%;
+  animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-mask p{color:var(--text-2);font-size:13px}
+
+.modal-mask{position:fixed;inset:0;z-index:160;background:rgba(16,20,28,.5);display:flex;
+  align-items:flex-start;justify-content:center;padding:36px 16px;overflow-y:auto}
+.modal{width:100%;max-width:660px;background:#fff;border-radius:14px;box-shadow:var(--shadow-lg);
+  animation:modalIn .2s ease-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-size:16px;font-weight:600;flex:1}
+.modal-close{font-size:20px;color:var(--muted);width:30px;height:30px;border-radius:6px;line-height:1}
+.modal-close:hover{background:#F2F3F5;color:var(--text)}
+.modal-body{padding:18px 20px;max-height:64vh;overflow-y:auto}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:#FAFBFC;border-radius:0 0 14px 14px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-item{display:flex;flex-direction:column;gap:6px}
+.form-item.full{grid-column:1 / -1}
+.form-item label{font-size:13px;color:var(--text-2);font-weight:500}
+.form-item .hint{font-size:11px;color:var(--muted)}
+.check-row{display:flex;gap:16px;flex-wrap:wrap;padding-top:4px}
+.check-row label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer}
+.check-row input{width:15px;height:15px;accent-color:var(--primary)}
+
+/* 响应式 */
+@media (max-width:900px){
+  .sidebar{width:64px}
+  .brand{padding:18px 12px;justify-content:center}
+  .brand-text,.nav-label,.sidebar-foot span{display:none}
+  .nav-item{justify-content:center;padding:12px 0}
+  .main{margin-left:64px}
+  .topbar{padding:0 14px;gap:10px}
+  .content{padding:16px 14px 32px}
+  .form-grid{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .user-meta{display:none}
+  .stat-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== 登录页 ===================== -->
+<div id="login" class="login-mask hidden">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-logo">安</div>
+      <h1>安心饮 · 商家后台</h1>
+      <p>Anxineat Merchant Console</p>
+    </div>
+    <form id="loginForm" autocomplete="off">
+      <div class="field">
+        <label for="loginUser">账号</label>
+        <input id="loginUser" class="input" placeholder="请输入管理员账号" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginPass">密码</label>
+        <input id="loginPass" class="input" type="password" placeholder="请输入密码" autocomplete="current-password">
+      </div>
+      <div class="login-err" id="loginErr"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;height:42px;font-size:15px">登 录</button>
+    </form>
+    <div class="demo-box">
+      <div class="demo-title">演示账号（点击一键填入）</div>
+      <div class="demo-item" data-act="fill-demo" data-user="admin" data-pass="admin123">
+        <span class="who">超级管理员<small>可切换全部门店</small></span>
+        <code>admin / admin123</code>
+      </div>
+      <div class="demo-item" data-act="fill-demo" data-user="clerk1" data-pass="clerk123">
+        <span class="who">万达店店员<small>仅可操作绑定门店</small></span>
+        <code>clerk1 / clerk123</code>
+      </div>
+      <div class="demo-item" data-act="fill-demo" data-user="clerk2" data-pass="clerk123">
+        <span class="who">二七店店员<small>仅可操作绑定门店</small></span>
+        <code>clerk2 / clerk123</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 主界面 ===================== -->
+<div id="app" class="app hidden">
+
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">安</div>
+      <div class="brand-text">
+        <strong>安心饮</strong>
+        <small>MERCHANT</small>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">
+      <button data-act="logout">退出登录</button>
+      <span> · v1.0</span>
+    </div>
+  </aside>
+
+  <!-- 右侧主区 -->
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">今日概览</h1>
+      <div class="spacer"></div>
+
+      <div class="store-picker" id="storePicker">
+        <label>当前门店</label>
+        <select id="storeSelect" class="select" data-change="store"></select>
+      </div>
+
+      <div class="auto-refresh" title="订单列表每 10 秒静默刷新">
+        <span class="dot on" id="autoDot"></span>
+        <label class="switch" title="开关自动刷新">
+          <input type="checkbox" id="autoSwitch" checked data-change="auto">
+          <span></span>
+        </label>
+        <span>自动刷新</span>
+      </div>
+
+      <button class="btn btn-sm" data-act="refresh">手动刷新</button>
+
+      <div class="user-chip">
+        <div class="avatar" id="userAvatar">-</div>
+        <div class="user-meta">
+          <strong><span id="userName">-</span><span id="userRole" class="role-tag"></span></strong>
+          <small id="userStore">-</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" id="view"></main>
+  </div>
+</div>
+
+<div id="toast" class="toast-wrap"></div>
+
+<div id="loading" class="loading-mask hidden">
+  <div class="spinner"></div>
+  <p id="loadingText">加载中…</p>
+</div>
+
+<div id="modal" class="modal-mask hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">标题</h3>
+      <button class="modal-close" data-act="close-modal">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   安心饮商家管理后台
+   --------------------------------------------------------------------------
+   纯原生实现，无任何外部依赖（无 CDN、无框架），可完全离线运行。
+   接口严格遵循 docs/API接口契约.md 的「第五节 商家后台」与「第六节 订单状态机」。
+
+   代码分区：
+     1. 常量与状态
+     2. 通用工具（金额换算 / 转义 / 时间 / toast / loading / modal）
+     3. 统一请求封装 request()
+     4. 登录与会话
+     5. 侧边栏与顶栏
+     6. 视图：今日概览 / 订单管理 / 商品管理 / 门店配置 / 优惠券 / 系统配置
+     7. 自动刷新与事件委托
+   ========================================================================== */
+
+/* ========================= 1. 常量与状态 ========================= */
+
+// 页面以 file:// 打开时，接口回落到本机后端；由 Spring Boot 托管时为空（同源相对路径）
+const API_BASE = (location.protocol === 'file:') ? 'http://localhost:8080' : '';
+
+const TOKEN_KEY = 'anxineat_admin_token';
+const ADMIN_KEY = 'anxineat_admin_info';
+const REFRESH_INTERVAL_MS = 10000;   // 订单列表自动刷新间隔
+
+// 订单状态元数据（依据契约第六节）
+const ORDER_STATUS = {
+  PENDING_PAYMENT: { label: '待支付', color: '#F59E0B' },
+  PAID:            { label: '已支付', color: '#2563EB' },
+  MAKING:          { label: '制作中', color: '#7C3AED' },
+  READY:           { label: '待取餐', color: '#E4002B' },
+  DELIVERING:      { label: '配送中', color: '#06B6D4' },
+  COMPLETED:       { label: '已完成', color: '#16A34A' },
+  CANCELLED:       { label: '已取消', color: '#9CA3AF' },
+  REFUNDED:        { label: '已退款', color: '#6B7280' }
+};
+const ORDER_STATUS_KEYS = Object.keys(ORDER_STATUS);
+
+// 券类型
+const COUPON_TYPE = {
+  NO_THRESHOLD:   '无门槛券',
+  FULL_REDUCTION: '满减券',
+  DISCOUNT:       '折扣券'
+};
+// 适用范围
+const SCOPE_TYPE = { ALL: '全场通用', CATEGORY: '指定分类', PRODUCT: '指定商品' };
+// 渠道
+const CHANNELS = { PICKUP: '自取', DELIVERY: '外卖' };
+
+// 关键系统配置的中文说明（后端 description 为空时的兜底）
+const CONFIG_DESC = {
+  'point.consume.per_yuan':       '每实付 1 元获得积分数量',
+  'point.signin.amount':          '每日签到赠送积分',
+  'point.deduct.cents_per_point': '积分抵现比例：1 积分可抵扣多少分钱（1 = 1 积分抵 0.01 元）',
+  'point.deduct.min_point':       '积分抵现起用门槛（积分）',
+  'point.deduct.max_percent':     '积分最多可抵扣订单商品金额的百分比',
+  'point.expire.enabled':         '积分年度滚动过期开关（1 开 / 0 关）',
+  'point.expire.months':          '积分有效期（月）',
+  'order.pay.expire_minutes':     '待支付订单超时自动取消时长（分钟）',
+  'order.auto_accept':            '支付后是否自动接单（演示用）',
+  'coupon.expire_check_enabled':  '是否启用过期券自动置为失效'
+};
+
+// 侧边栏菜单
+const MENU = [
+  { key: 'overview', name: '今日概览', icon: '◈' },
+  { key: 'orders',   name: '订单管理', icon: '☰' },
+  { key: 'products', name: '商品管理', icon: '☕' },
+  { key: 'categories', name: '分类管理', icon: '🏷' },
+  { key: 'stores',   name: '门店配置', icon: '🏪' },
+  { key: 'coupons',  name: '优惠券',   icon: '🎟' },
+  { key: 'configs',  name: '系统配置', icon: '⚙' }
+];
+
+// 全局运行时状态
+const state = {
+  token: '',
+  admin: null,        // { id, username, realName, role, storeId }
+  stores: [],         // 可访问门店列表
+  storeId: null,      // 当前操作门店（超管可切，店员锁定）
+  view: 'overview',
+  autoRefresh: true,
+  loadingCount: 0,
+  timer: null,
+  orders: { list: [], page: 1, size: 10, status: '', keyword: '', total: 0, pages: 1, seenIds: null, loaded: false },
+  products: { keyword: '', categoryId: '' },
+  categories: [],
+  coupons: []
+};
+
+/* ========================= 2. 通用工具 ========================= */
+
+/** 分 → 元（金额换算统一入口一：仅在这里做除法） */
+function fenToYuan(fen) {
+  if (fen === null || fen === undefined || fen === '') return 0;
+  const n = Number(fen);
+  return Number.isFinite(n) ? n / 100 : 0;
+}
+
+/** 元 → 分（金额换算统一入口二：仅在这里做乘法与取整） */
+function yuanToFen(yuan) {
+  if (yuan === null || yuan === undefined || yuan === '') return 0;
+  const n = Number(String(yuan).trim());
+  return Number.isFinite(n) ? Math.round(n * 100) : 0;
+}
+
+/** 金额展示：1600 → ¥16.00 */
+function fmtMoney(fen) {
+  const v = fenToYuan(fen);
+  return '¥' + v.toFixed(2);
+}
+
+/** 用于 <input value> 的元字符串：1600 → "16.00" */
+function yuanInputValue(fen) {
+  return fenToYuan(fen).toFixed(2);
+}
+
+/** HTML 转义，防止后端数据中的特殊字符破坏结构（XSS） */
+function esc(v) {
+  return String(v === null || v === undefined ? '' : v)
+    .replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/** 去掉秒的展示：2026-09-02 22:33:00 → 09-02 22:33 */
+function fmtTime(t) {
+  if (!t) return '-';
+  const s = String(t).replace('T', ' ');
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2})/);
+  if (!m) return esc(s);
+  const nowYear = String(new Date().getFullYear());
+  return m[1] === nowYear ? `${m[2]}-${m[3]} ${m[4]}:${m[5]}` : `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}`;
+}
+
+/** datetime-local 值 → yyyy-MM-dd HH:mm:ss */
+function localToServer(v) {
+  if (!v) return null;
+  return String(v).replace('T', ' ') + ':00';
+}
+
+/** yyyy-MM-dd HH:mm:ss → datetime-local 值 */
+function serverToLocal(v) {
+  if (!v) return '';
+  return String(v).replace(' ', 'T').slice(0, 16);
+}
+
+/** 订单状态中文 */
+function statusLabel(s) {
+  return (ORDER_STATUS[s] && ORDER_STATUS[s].label) || s || '-';
+}
+
+/** 状态标签 HTML */
+function statusTag(s) {
+  const meta = ORDER_STATUS[s] || { label: s || '-', color: '#9CA3AF' };
+  return `<span class="tag t-${esc(s)}"><i class="tag-dot"></i>${esc(meta.label)}</span>`;
+}
+
+/** 券类型中文 */
+function couponTypeLabel(t) { return COUPON_TYPE[t] || t || '-'; }
+
+/* ---------- Toast ---------- */
+function toast(msg, type) {
+  type = type || 'info';
+  const icons = { success: '✓', error: '✕', warn: '!', info: 'i' };
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span class="ic">${icons[type] || 'i'}</span><span>${esc(msg)}</span>`;
+  document.getElementById('toast').appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 240);
+  }, type === 'error' ? 3200 : 2200);
+}
+
+/* ---------- 加载遮罩（计数以支持并发） ---------- */
+function showLoading(text) {
+  state.loadingCount++;
+  const box = document.getElementById('loading');
+  document.getElementById('loadingText').textContent = text || '加载中…';
+  box.classList.remove('hidden');
+}
+function hideLoading() {
+  state.loadingCount = Math.max(0, state.loadingCount - 1);
+  if (state.loadingCount === 0) document.getElementById('loading').classList.add('hidden');
+}
+
+/* ---------- 模态框 ---------- */
+function openModal(title, bodyHtml, footHtml) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  document.getElementById('modalFoot').innerHTML = footHtml;
+  document.getElementById('modal').classList.remove('hidden');
+}
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+  document.getElementById('modalBody').innerHTML = '';
+  document.getElementById('modalFoot').innerHTML = '';
+}
+
+/* ========================= 3. 统一请求封装 ========================= */
+
+/**
+ * 统一请求入口：集中处理 token 注入、错误码、网络异常、加载态。
+ * @param {string} method  GET / POST / PUT / DELETE
+ * @param {string} path    以 /api 开头的接口路径
+ * @param {object} [body]  请求体（GET 时为 query 参数对象）
+ * @param {object} [opts]  { silent:true 静默（不显示遮罩、不提示业务错误）, loadingText }
+ */
+async function request(method, path, body, opts) {
+  opts = opts || {};
+  const isLogin = path === '/api/admin/login';
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token && !isLogin) headers['Authorization'] = 'Bearer ' + state.token;
+
+  let url = API_BASE + path;
+  let payload;
+  if (body !== undefined && body !== null) {
+    if (method === 'GET') {
+      const qs = new URLSearchParams();
+      Object.keys(body).forEach(k => {
+        const v = body[k];
+        if (v !== '' && v !== null && v !== undefined) qs.append(k, v);
+      });
+      const s = qs.toString();
+      if (s) url += (url.includes('?') ? '&' : '?') + s;
+    } else {
+      payload = JSON.stringify(body);
+    }
+  }
+
+  if (!opts.silent) showLoading(opts.loadingText);
+  try {
+    const res = await fetch(url, { method, headers, body: payload });
+    let json;
+    try {
+      json = await res.json();
+    } catch (e) {
+      if (!opts.silent) toast('服务返回异常（HTTP ' + res.status + '）', 'error');
+      throw new Error('BAD_RESPONSE');
+    }
+
+    // 登录失效：清 token 回到登录页（契约错误码 1002）
+    if (json.code === 1002) {
+      handleUnauthorized(json.message);
+      throw new Error(json.message || '未登录');
+    }
+    // 越权操作其他门店（4010）：给出更友好的引导
+    if (json.code === 4010) {
+      toast('无权操作其他门店数据：店员账号仅能操作自己绑定的门店', 'error');
+      throw new Error(json.message || 'FORBIDDEN');
+    }
+    if (json.code !== 0) {
+      if (!opts.silent) toast(json.message || ('操作失败（' + json.code + '）'), 'error');
+      const err = new Error(json.message || 'BIZ_ERROR');
+      err.code = json.code;
+      throw err;
+    }
+    return json.data;
+  } catch (e) {
+    // 网络层失败（后端未启动 / 断网）
+    if (e && (e.name === 'TypeError' || e.message === 'Failed to fetch')) {
+      toast('无法连接后端服务，请确认已启动 localhost:8080', 'error');
+    } else if (e && e.message !== 'BAD_RESPONSE' && !opts.silent && !e.code) {
+      // 其他未知异常静默兜底，避免控制台噪音
+    }
+    throw e;
+  } finally {
+    if (!opts.silent) hideLoading();
+  }
+}
+
+function handleUnauthorized(msg) {
+  clearSession();
+  showLogin(msg || '登录已失效，请重新登录');
+}
+
+/* ========================= 4. 登录与会话 ========================= */
+
+function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveSession(token, admin) {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
+  state.token = token;
+  state.admin = admin;
+}
+function clearSession() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ADMIN_KEY);
+  state.token = '';
+  state.admin = null;
+  state.stores = [];
+  stopAutoRefresh();
+}
+
+function showLogin(errMsg) {
+  stopAutoRefresh();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login').classList.remove('hidden');
+  document.getElementById('loginErr').textContent = errMsg || '';
+  if (!errMsg) {
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+  }
+  setTimeout(() => document.getElementById('loginUser').focus(), 50);
+}
+
+async function doLogin(username, password) {
+  if (!username || !password) {
+    document.getElementById('loginErr').textContent = '请输入账号和密码';
+    return;
+  }
+  const errBox = document.getElementById('loginErr');
+  errBox.textContent = '';
+  showLoading('登录中…');
+  try {
+    const data = await request('POST', '/api/admin/login', { username, password }, { silent: true });
+    if (!data || !data.token) throw new Error('登录响应缺少 token');
+    saveSession(data.token, data.admin || {});
+    await enterApp();
+  } catch (e) {
+    errBox.textContent = (e && e.message) || '登录失败，请检查账号密码';
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 登录成功后的初始化：拉取门店 → 确定当前门店 → 渲染界面 */
+async function enterApp() {
+  const admin = state.admin || {};
+  let stores = [];
+  try {
+    stores = await request('GET', '/api/admin/stores', null, { silent: true }) || [];
+  } catch (e) {
+    // 门店列表获取失败不阻断进入，但后续功能会受限
+    stores = [];
+  }
+  state.stores = Array.isArray(stores) ? stores : [];
+
+  if (admin.role === 'CLERK') {
+    // 店员锁定绑定门店，不提供切换器（后端亦会强制覆盖 storeId）
+    state.storeId = admin.storeId || (state.stores[0] && state.stores[0].id) || null;
+  } else {
+    state.storeId = (state.stores[0] && state.stores[0].id) || null;
+  }
+
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  renderShell();
+  switchView('overview');
+  startAutoRefresh();
+}
+
+/** 渲染顶栏用户信息与门店切换器 */
+function renderShell() {
+  const admin = state.admin || {};
+  const isSuper = admin.role === 'SUPER_ADMIN';
+
+  document.getElementById('userAvatar').textContent = (admin.realName || admin.username || '?').slice(0, 1);
+  document.getElementById('userName').textContent = admin.realName || admin.username || '-';
+  const roleEl = document.getElementById('userRole');
+  roleEl.textContent = isSuper ? '超管' : '店员';
+  roleEl.className = 'role-tag ' + (isSuper ? 'role-super' : 'role-clerk');
+
+  const cur = state.stores.find(s => String(s.id) === String(state.storeId));
+  document.getElementById('userStore').textContent = cur ? cur.name : (isSuper ? '全部门店' : '未绑定门店');
+
+  // 门店切换器：仅超管可见
+  const picker = document.getElementById('storePicker');
+  const sel = document.getElementById('storeSelect');
+  if (isSuper && state.stores.length) {
+    picker.classList.remove('hidden');
+    sel.innerHTML = state.stores.map(s =>
+      `<option value="${s.id}"${String(s.id) === String(state.storeId) ? ' selected' : ''}>${esc(s.name)}</option>`
+    ).join('') + `<option value=""${state.storeId ? '' : ' selected'}>全部门店</option>`;
+  } else {
+    picker.classList.add('hidden');
+  }
+
+  // 侧边栏
+  document.getElementById('nav').innerHTML = MENU.map(m =>
+    `<button class="nav-item${m.key === state.view ? ' active' : ''}" data-act="nav" data-view="${m.key}">
+       <span class="nav-icon">${m.icon}</span><span class="nav-label">${m.name}</span>
+     </button>`).join('');
+
+  document.getElementById('autoSwitch').checked = state.autoRefresh;
+  document.getElementById('autoDot').className = 'dot' + (state.autoRefresh ? ' on' : '');
+}
+
+/* ========================= 5. 视图切换 ========================= */
+
+const VIEWS = {
+  overview: { title: '今日概览', render: renderOverview, load: loadOverview },
+  orders:   { title: '订单管理', render: renderOrders,   load: loadOrders },
+  products: { title: '商品管理', render: renderProducts, load: loadProducts },
+  categories: { title: '分类管理', render: renderCategories, load: loadCategories },
+  stores:   { title: '门店配置', render: renderStores,   load: loadStores },
+  coupons:  { title: '优惠券管理', render: renderCoupons, load: loadCoupons },
+  configs:  { title: '系统配置', render: renderConfigs,  load: loadConfigs }
+};
+
+async function switchView(key) {
+  if (!VIEWS[key]) return;
+  state.view = key;
+  // 切走订单页时清掉高亮记录，避免下次进入误判为新订单
+  if (key !== 'orders') state.orders.seenIds = null;
+  document.getElementById('pageTitle').textContent = VIEWS[key].title;
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.view === key);
+  });
+  await VIEWS[key].load();
+}
+
+const $view = () => document.getElementById('view');
+
+/* ========================= 6.1 今日概览 ========================= */
+
+async function loadOverview() {
+  const v = $view();
+  v.innerHTML = skeletonCards();
+  let data;
+  try {
+    data = await request('GET', '/api/admin/overview', { storeId: state.storeId || '' }, { silent: true });
+  } catch (e) {
+    v.innerHTML = errorBlock('概览数据加载失败', e && e.message);
+    return;
+  }
+  renderOverview(data || {});
+}
+
+function renderOverview(data) {
+  const today = data.today || {};
+  const counts = data.statusCounts || {};
+  const max = Math.max(1, ...ORDER_STATUS_KEYS.map(k => Number(counts[k] || 0)));
+  const totalOrders = ORDER_STATUS_KEYS.reduce((s, k) => s + Number(counts[k] || 0), 0);
+
+  const bars = ORDER_STATUS_KEYS.map(k => {
+    const n = Number(counts[k] || 0);
+    const meta = ORDER_STATUS[k];
+    return `<div class="bar-row">
+      <span class="bar-label">${esc(meta.label)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(n / max * 100).toFixed(1)}%;background:${meta.color}"></div></div>
+      <span class="bar-val">${n}</span>
+    </div>`;
+  }).join('');
+
+  $view().innerHTML = `
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">今日订单数</div>
+        <div class="stat-value">${Number(today.orderCount || 0)}</div>
+        <div class="stat-foot">含全部状态</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">今日销售额</div>
+        <div class="stat-value"><span class="unit">¥</span>${fenToYuan(today.salesAmount).toFixed(2)}</div>
+        <div class="stat-foot">已支付口径实收</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">已完成金额</div>
+        <div class="stat-value"><span class="unit">¥</span>${fenToYuan(today.completedAmount).toFixed(2)}</div>
+        <div class="stat-foot">状态为已完成的订单</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">客单价</div>
+        <div class="stat-value"><span class="unit">¥</span>${fenToYuan(today.avgAmount).toFixed(2)}</div>
+        <div class="stat-foot">销售额 / 订单数</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>订单状态分布<span class="sub">共 ${totalOrders} 单</span></h2>
+        <div class="spacer"></div>
+        <span class="muted" style="font-size:12px">每 10 秒自动刷新</span>
+      </div>
+      <div class="card-body">${bars}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>近 7 日销售趋势<span class="sub">销售额 / 订单数</span></h2></div>
+      <div class="card-body">
+        <div class="trend-chart">${renderTrend(data.trend7d)}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>热销商品 TOP ${((data.topProducts) || []).length || 5}</h2></div>
+      <div class="card-body">
+        ${renderTopProducts(data.topProducts)}
+      </div>
+    </div>`;
+}
+
+function renderTrend(trend) {
+  const list = trend || [];
+  const tMax = Math.max(1, ...list.map(t => Number(t.salesAmount || 0)));
+  if (!list.length) return '<div class="muted">暂无数据</div>';
+  return list.map(t => {
+    const amt = Number(t.salesAmount || 0);
+    const h = Math.max(2, Math.round(amt / tMax * 100));
+    return `<div class="trend-col" title="${esc(t.date)}：¥${fenToYuan(amt).toFixed(2)} / ${Number(t.orderCount || 0)}单">
+      <div class="trend-val">¥${fenToYuan(amt).toFixed(0)}</div>
+      <div class="trend-bar" style="height:${h}%"></div>
+      <div class="trend-x">${esc(t.date)}</div>
+      <div class="trend-sub">${Number(t.orderCount || 0)}单</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTopProducts(tops) {
+  const list = tops || [];
+  if (!list.length) return '<div class="muted">暂无已完成订单数据</div>';
+  return list.map((p, i) => `
+    <div class="top-row">
+      <span class="top-rank">${i + 1}</span>
+      <span class="top-name">${esc(p.productName || '-')}</span>
+      <span class="top-qty">${Number(p.qty || 0)} 杯</span>
+      <span class="top-amt">¥${fenToYuan(p.amount).toFixed(2)}</span>
+    </div>`).join('');
+}
+
+function skeletonCards() {
+  return `<div class="stat-grid">
+    ${[0, 1, 2, 3].map(() => `<div class="stat"><div class="stat-label">&nbsp;</div>
+      <div class="stat-value" style="color:#EDEEF0">—</div><div class="stat-foot">&nbsp;</div></div>`).join('')}
+  </div>`;
+}
+
+function errorBlock(title, detail) {
+  return `<div class="card"><div class="empty">
+    <div class="empty-icon">⚠</div>
+    <p>${esc(title)}</p>
+    <small>${esc(detail || '请检查后端服务是否正常')}</small>
+    <div style="margin-top:14px"><button class="btn btn-primary" data-act="refresh">重试</button></div>
+  </div></div>`;
+}
+
+/* ========================= 6.2 订单管理 ========================= */
+
+async function loadOrders(opts) {
+  opts = opts || {};
+  const silent = !!opts.silent;
+  const o = state.orders;
+  if (!silent) $view().innerHTML = skeletonCards();
+
+  let data;
+  try {
+    data = await request('GET', '/api/admin/orders', {
+      storeId: state.storeId || '',
+      status: o.status,
+      keyword: o.keyword,
+      page: o.page,
+      size: o.size
+    }, { silent: true });
+  } catch (e) {
+    if (!silent) $view().innerHTML = errorBlock('订单列表加载失败', e && e.message);
+    return;
+  }
+
+  data = data || {};
+  const list = data.records || [];
+
+  // 新订单高亮：记录已见订单号，仅静默刷新时对比
+  let newIds = [];
+  if (silent && o.seenIds) {
+    newIds = list.map(x => x.orderNo || x.id).filter(id => !o.seenIds.has(id));
+  }
+  if (!o.seenIds) o.seenIds = new Set();
+  list.forEach(x => o.seenIds.add(x.orderNo || x.id));
+
+  o.list = list;
+  o.total = Number(data.total || 0);
+  o.pages = Number(data.pages || 1);
+  o.page = Number(data.current || o.page || 1);
+  o.loaded = true;
+
+  renderOrders(newIds);
+  // 有静默刷新产生的新单时，用一条 toast 提示
+  if (silent && newIds.length) toast('有 ' + newIds.length + ' 笔新订单', 'warn');
+}
+
+function renderOrders(newIds) {
+  const o = state.orders;
+  const set = new Set(newIds || []);
+  const rows = o.list.map(x => {
+    const isNew = set.has(x.orderNo || x.id);
+    return `<tr class="${isNew ? 'row-new' : ''}">
+      <td class="t-nowrap"><strong>${esc(x.orderNo || ('#' + x.id))}</strong></td>
+      <td class="t-nowrap">${esc(x.storeName || ('门店 ' + (x.storeId || '-')))}</td>
+      <td class="t-center"><span class="type-tag type-${esc(x.orderType)}">${x.orderType === 'DELIVERY' ? '外卖' : '自取'}</span></td>
+      <td>${statusTag(x.status)}</td>
+      <td class="t-right num strong">${fmtMoney(x.payAmount !== undefined && x.payAmount !== null ? x.payAmount : x.totalAmount)}</td>
+      <td class="t-center">${x.pickupCode ? `<span class="code-chip">${esc(x.pickupCode)}</span>` : '<span class="muted">-</span>'}</td>
+      <td class="t-nowrap muted">${fmtTime(x.createdAt)}</td>
+      <td class="t-right t-nowrap">${orderActions(x)}</td>
+    </tr>`;
+  }).join('');
+
+  const from = o.total === 0 ? 0 : (o.page - 1) * o.size + 1;
+  const to = Math.min(o.page * o.size, o.total);
+
+  $view().innerHTML = `
+    <div class="redeem-bar">
+      <span class="lead">取餐码核销</span>
+      <input id="redeemInput" class="redeem-input" maxlength="3" placeholder="···" inputmode="numeric" autocomplete="off">
+      <button class="btn btn-primary" data-act="redeem">核销</button>
+      <span class="muted" style="font-size:12px">输入 3 位取餐码直接核销自取订单</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>订单列表<span class="sub">共 ${o.total} 条</span></h2>
+        <div class="spacer"></div>
+        <div class="toolbar">
+          <select class="select" data-change="order-status">
+            <option value="">全部状态</option>
+            ${ORDER_STATUS_KEYS.map(k => `<option value="${k}"${o.status === k ? ' selected' : ''}>${ORDER_STATUS[k].label}</option>`).join('')}
+          </select>
+          <input class="input" style="width:190px" placeholder="订单号 / 取餐码" value="${esc(o.keyword)}" id="orderKeyword">
+          <button class="btn" data-act="order-search">搜索</button>
+          <button class="btn btn-ghost" data-act="order-reset">重置</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:170px">订单号</th>
+            <th style="min-width:150px">门店</th>
+            <th class="t-center">类型</th>
+            <th style="min-width:90px">状态</th>
+            <th class="t-right" style="min-width:96px">实付金额</th>
+            <th class="t-center" style="min-width:92px">取餐码</th>
+            <th style="min-width:110px">下单时间</th>
+            <th class="t-right" style="min-width:180px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${o.list.length ? rows : `<tr><td colspan="8">${emptyBlock('暂无订单', o.keyword || o.status ? '试试调整筛选条件' : '新订单会出现在这里')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+
+      ${o.list.length ? `
+      <div class="pager">
+        <span class="info">第 ${from}-${to} 条 / 共 ${o.total} 条</span>
+        <div class="spacer"></div>
+        <button class="btn btn-sm" data-act="page" data-page="${o.page - 1}" ${o.page <= 1 ? 'disabled' : ''}>上一页</button>
+        <span class="info">${o.page} / ${o.pages}</span>
+        <button class="btn btn-sm" data-act="page" data-page="${o.page + 1}" ${o.page >= o.pages ? 'disabled' : ''}>下一页</button>
+      </div>` : ''}
+    </div>`;
+}
+
+/**
+ * 按订单当前状态渲染可执行操作（严格遵循契约第六节状态机）。
+ * PAID → 接单；MAKING → 出餐；READY → 自取核销 / 外卖开始配送；DELIVERING → 确认送达
+ * PAID / MAKING / READY / DELIVERING → 退款
+ */
+function orderActions(o) {
+  const id = o.id;
+  const isDelivery = o.orderType === 'DELIVERY';
+  const btns = [];
+  const push = (act, text, cls) => btns.push(`<button class="btn btn-sm ${cls || ''}" data-act="${act}" data-id="${id}">${text}</button>`);
+
+  switch (o.status) {
+    case 'PAID':
+      push('order-accept', '接单', 'btn-primary');
+      push('order-refund', '退款', 'btn-danger');
+      break;
+    case 'MAKING':
+      push('order-ready', '出餐', 'btn-primary');
+      push('order-refund', '退款', 'btn-danger');
+      break;
+    case 'READY':
+      // 自取：核销取餐码；外卖：开始配送
+      if (isDelivery) push('order-delivering', '开始配送', 'btn-primary');
+      else push('order-complete', '核销', 'btn-primary');
+      push('order-refund', '退款', 'btn-danger');
+      break;
+    case 'DELIVERING':
+      push('order-complete', '确认送达', 'btn-primary');
+      push('order-refund', '退款', 'btn-danger');
+      break;
+    default:
+      return '<span class="muted">—</span>';
+  }
+  return `<span style="display:inline-flex;gap:6px;justify-content:flex-end">${btns.join('')}</span>`;
+}
+
+/** 订单状态流转的统一执行器 */
+async function doOrderAction(id, act) {
+  const map = {
+    'order-accept':     { path: `/api/admin/order/${id}/accept`,     ok: '已接单，进入制作中' },
+    'order-ready':      { path: `/api/admin/order/${id}/ready`,      ok: '已出餐，等待取餐/配送' },
+    'order-delivering': { path: `/api/admin/order/${id}/delivering`, ok: '已开始配送' },
+    'order-complete':   { path: `/api/admin/order/${id}/complete`,   ok: '订单已完成' }
+  };
+  const conf = map[act];
+  if (!conf) return;
+  await request('POST', conf.path, {}, { loadingText: '处理中…' });
+  toast(conf.ok, 'success');
+  await loadOrders();
+  if (state.view === 'overview') await loadOverview();
+}
+
+/** 退款：需要填写原因 */
+async function doRefund(id) {
+  const reason = prompt('请输入退款原因（提交后不可撤销）：');
+  if (reason === null) return;
+  const r = String(reason).trim();
+  if (!r) { toast('退款原因不能为空', 'error'); return; }
+  await request('POST', `/api/admin/order/${id}/refund`, { reason: r }, { loadingText: '退款中…' });
+  toast('退款成功，库存与优惠券已回补', 'success');
+  await loadOrders();
+}
+
+/** 取餐码核销 */
+async function doRedeem() {
+  const input = document.getElementById('redeemInput');
+  const code = (input.value || '').trim();
+  if (!code) { toast('请输入 3 位取餐码', 'error'); input.focus(); return; }
+  if (!/^\d{3}$/.test(code)) { toast('取餐码应为 3 位数字', 'error'); input.select(); return; }
+  try {
+    const data = await request('POST', '/api/admin/order/redeem', { pickupCode: code }, { loadingText: '核销中…' });
+    const no = (data && (data.orderNo || data.order_no)) || '';
+    toast('核销成功' + (no ? '，订单号 ' + no : ''), 'success');
+    input.value = '';
+    await loadOrders();
+  } finally {
+    input.focus();
+  }
+}
+
+function emptyBlock(title, sub) {
+  return `<div class="empty"><div class="empty-icon">🗂</div><p>${esc(title)}</p><small>${esc(sub || '')}</small></div>`;
+}
+
+/* ========================= 6.3 商品管理 ========================= */
+
+async function loadProducts() {
+  $view().innerHTML = skeletonCards();
+  let list;
+  try {
+    list = await request('GET', '/api/admin/products', {
+      storeId: state.storeId || '',
+      keyword: state.products.keyword,
+      categoryId: state.products.categoryId
+    }, { silent: true }) || [];
+  } catch (e) {
+    $view().innerHTML = errorBlock('商品列表加载失败', e && e.message);
+    return;
+  }
+  renderProducts(Array.isArray(list) ? list : []);
+}
+
+function renderProducts(list) {
+  // 分类下拉：从返回数据的分类字段归并
+  const cats = [];
+  list.forEach(p => {
+    const id = p.categoryId;
+    const name = p.categoryName || ('分类 ' + id);
+    if (id !== undefined && id !== null && !cats.some(c => String(c.id) === String(id))) cats.push({ id, name });
+  });
+
+  const rows = list.map(p => {
+    const onSale = p.onSale === undefined || p.onSale === null ? true : !!p.onSale;
+    const soldOut = !!(p.storeSoldOut !== undefined ? p.storeSoldOut : p.soldOut);
+    const skus = Array.isArray(p.skus) ? p.skus : [];
+
+    const skuHtml = skus.length ? skus.map(s => `
+      <div class="sku-row">
+        <span class="sku-name" title="${esc(s.cupSize || s.name || '规格')}">${esc(s.cupSize || s.name || '规格')}</span>
+        <input class="input input-sm sku-stock" type="number" step="1"
+               value="${Number(s.stock) === -1 ? '' : Number(s.stock || 0)}"
+               placeholder="不限量" data-sku="${s.id}">
+        <button class="btn btn-sm" data-act="sku-stock" data-id="${s.id}">保存</button>
+      </div>`).join('') : '<span class="muted">无规格</span>';
+
+    return `<tr>
+      <td>
+        <div class="strong">${esc(p.name)}</div>
+        ${p.description ? `<div class="muted" style="font-size:12px;margin-top:2px;max-width:300px">${esc(p.description)}</div>` : ''}
+      </td>
+      <td class="t-nowrap">${esc(p.categoryName || (p.categoryId != null ? '分类 ' + p.categoryId : '-'))}</td>
+      <td class="t-right num">${fmtMoney(p.storePrice !== undefined && p.storePrice !== null ? p.storePrice : p.basePrice)}</td>
+      <td class="t-center">
+        <button class="btn btn-sm ${onSale ? '' : 'btn-primary'}" data-act="on-sale" data-id="${p.id}" data-val="${onSale ? 0 : 1}">
+          ${onSale ? '已上架' : '已下架'}
+        </button>
+      </td>
+      <td class="t-center">
+        <label class="switch" title="商品级售罄（全局生效，优先于门店售罄）">
+          <input type="checkbox" data-change="manual-sold-out" data-id="${p.id}" ${Number(p.manualSoldOut) === 1 || p.manualSoldOut === true ? 'checked' : ''}>
+          <span></span>
+        </label>
+        <div class="muted" style="font-size:11px;margin-top:2px">${Number(p.manualSoldOut) === 1 || p.manualSoldOut === true ? '全局售罄' : '正常'}</div>
+      </td>
+      <td class="t-center">
+        <label class="switch" title="售罄开关">
+          <input type="checkbox" data-change="sold-out" data-id="${p.id}" ${soldOut ? 'checked' : ''}>
+          <span></span>
+        </label>
+        <div class="muted" style="font-size:11px;margin-top:2px">${soldOut ? '售罄' : '在售'}</div>
+      </td>
+      <td style="min-width:210px">${skuHtml}</td>
+      <td class="t-right t-nowrap">
+        <button class="btn btn-sm btn-primary" data-act="product-detail" data-id="${p.id}">编辑详情</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  $view().innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <h2>商品与库存<span class="sub">共 ${list.length} 个商品</span></h2>
+        <div class="spacer"></div>
+        <div class="toolbar">
+          <select class="select" data-change="product-category">
+            <option value="">全部分类</option>
+            ${cats.map(c => `<option value="${c.id}"${String(state.products.categoryId) === String(c.id) ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}
+          </select>
+          <input class="input" style="width:180px" placeholder="搜索商品名" value="${esc(state.products.keyword)}" id="productKeyword">
+          <button class="btn" data-act="product-search">搜索</button>
+          <button class="btn btn-ghost" data-act="product-reset">重置</button>
+          <button class="btn btn-primary" data-act="product-new">+ 新建商品</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:200px">商品</th>
+            <th style="min-width:90px">分类</th>
+            <th class="t-right" style="min-width:90px">本店售价</th>
+            <th class="t-center" style="min-width:100px">本店上架</th>
+            <th class="t-center" style="min-width:90px">全局售罄</th>
+            <th class="t-center" style="min-width:90px">门店售罄</th>
+            <th style="min-width:210px">SKU 库存（留空 = 不限量）</th>
+            <th class="t-right" style="min-width:96px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${list.length ? rows : `<tr><td colspan="8">${emptyBlock('没有商品', '调整筛选条件试试')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-body muted" style="font-size:12px;padding-top:12px">
+        提示：上下架、售罄与库存修改提交后即时生效，用户端菜单会同步变化；库存填 <code>-1</code> 或留空表示不限量。
+      </div>
+    </div>`;
+}
+
+/** 上架 / 下架 */
+async function toggleOnSale(id, val) {
+  await request('POST', `/api/admin/product/${id}/on-sale`, { storeId: state.storeId, onSale: Number(val) }, { loadingText: '提交中…' });
+  toast(Number(val) === 1 ? '已上架，用户端即时可见' : '已下架，用户端即时不可见', 'success');
+  await loadProducts();
+}
+
+/** 售罄开关 */
+async function toggleSoldOut(id, checked) {
+  await request('POST', `/api/admin/product/${id}/sold-out`, { storeId: state.storeId, soldOut: checked ? 1 : 0 }, { loadingText: '提交中…' });
+  toast(checked ? '已标记为售罄' : '已恢复在售', 'success');
+  await loadProducts();
+}
+
+/** 商品级售罄开关（全局生效） */
+async function toggleManualSoldOut(id, checked) {
+  await request('POST', `/api/admin/product/${id}/manual-sold-out`, { status: checked ? 1 : 0 }, { loadingText: '提交中…' });
+  toast(checked ? '已标记为全局售罄（所有门店不可售）' : '已取消全局售罄', 'success');
+  await loadProducts();
+}
+
+/** 修改 SKU 库存 */
+async function saveSkuStock(skuId) {
+  const input = document.querySelector(`input[data-sku="${skuId}"]`);
+  if (!input) return;
+  const raw = String(input.value).trim();
+  const stock = raw === '' ? -1 : parseInt(raw, 10);
+  if (!Number.isFinite(stock) || stock < -1) { toast('库存须为 ≥ 0 的整数，或 -1 表示不限量', 'error'); return; }
+  await request('POST', `/api/admin/sku/${skuId}/stock`, { stock }, { loadingText: '保存中…' });
+  toast(stock === -1 ? '已设为不限量' : ('库存已更新为 ' + stock), 'success');
+  await loadProducts();
+}
+
+/* ========================= 6.2.1 商品详情编辑 ========================= */
+
+/** 打开商品详情编辑弹窗（基础信息 / 杯型SKU / 甜度冰度规格 / 小料）。productId 为空 = 新建商品 */
+async function openProductDetailModal(productId) {
+  let detail, cats;
+  try {
+    cats = await request('GET', '/api/admin/categories', null, { silent: true }) || [];
+    if (productId) {
+      detail = await request('GET', `/api/admin/product/${productId}/detail`, null, { silent: true });
+    } else {
+      detail = { name: '', categoryId: (cats[0] && cats[0].id) || null, description: '', image: '',
+                 calories: 0, sort: 99, status: 1, skus: [{}], specGroups: [], toppings: [] };
+    }
+  } catch (e) {
+    toast(e && e.message ? e.message : '加载商品详情失败', 'error');
+    return;
+  }
+  if (!detail) return;
+  const d = detail;
+  const catOpts = (Array.isArray(cats) ? cats : []).map(c =>
+    `<option value="${c.id}"${String(d.categoryId) === String(c.id) ? ' selected' : ''}>${esc(c.name)}</option>`).join('');
+
+  const skuRows = (d.skus || []).map(s => skuRowHtml(s)).join('');
+  const specBlocks = (d.specGroups || []).filter(g => g.code !== 'CUP').map(g => specGroupHtml(g)).join('');
+  const topRows = (d.toppings || []).map(t => toppingRowHtml(t)).join('');
+
+  const body = `
+    <div class="form-scroll">
+      <h4 class="pd-sec">基础信息</h4>
+      <div class="form-grid">
+        <div class="form-item full">
+          <label>商品名称</label>
+          <input class="input" id="pd_name" value="${esc(d.name || '')}">
+        </div>
+        <div class="form-item">
+          <label>分类</label>
+          <select class="select" id="pd_category">${catOpts}</select>
+        </div>
+        <div class="form-item">
+          <label>状态</label>
+          <select class="select" id="pd_status">
+            <option value="1"${Number(d.status) === 1 ? ' selected' : ''}>上架</option>
+            <option value="0"${Number(d.status) === 0 ? ' selected' : ''}>下架</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <label>图片 URL</label>
+          <input class="input" id="pd_image" value="${esc(d.image || '')}" placeholder="https://...">
+        </div>
+        <div class="form-item">
+          <label>卡路里(kcal)</label>
+          <input class="input input-sm" type="number" min="0" id="pd_calories" value="${Number(d.calories || 0)}">
+        </div>
+        <div class="form-item">
+          <label>排序</label>
+          <input class="input input-sm" type="number" min="0" id="pd_sort" value="${Number(d.sort || 0)}">
+        </div>
+        <div class="form-item full">
+          <label>描述</label>
+          <textarea class="input" id="pd_desc" rows="2">${esc(d.description || '')}</textarea>
+        </div>
+      </div>
+
+      <h4 class="pd-sec">杯型 / SKU（库存维度）<span class="hint">「杯型」规格项会自动与本表同步</span></h4>
+      <div id="pd_skus">${skuRows}</div>
+      <button class="btn btn-sm btn-ghost" id="pd_add_sku" type="button">+ 添加杯型</button>
+
+      <h4 class="pd-sec">规格（甜度 / 冰度等）</h4>
+      <div id="pd_specs">${specBlocks}</div>
+      <button class="btn btn-sm btn-ghost" id="pd_add_spec" type="button">+ 添加规格组</button>
+
+      <h4 class="pd-sec">小料</h4>
+      <div id="pd_toppings">${topRows}</div>
+      <button class="btn btn-sm btn-ghost" id="pd_add_top" type="button">+ 添加小料</button>
+    </div>`;
+  const foot = `
+    <button class="btn" data-act="close-modal">取消</button>
+    <button class="btn btn-primary" data-act="product-detail-save" data-id="${d.id || ''}">保存</button>`;
+  openModal(d.id ? ('编辑商品详情 · ' + (d.name || '')) : '新建商品', body, foot);
+
+  document.getElementById('pd_add_sku').addEventListener('click', () => addRow('#pd_skus', skuRowHtml({})));
+  document.getElementById('pd_add_top').addEventListener('click', () => addRow('#pd_toppings', toppingRowHtml({})));
+  document.getElementById('pd_add_spec').addEventListener('click', () => addRow('#pd_specs', specGroupHtml({})));
+  const mb = document.getElementById('modalBody');
+  mb.removeEventListener('click', onPdBodyClick);
+  mb.addEventListener('click', onPdBodyClick);
+}
+
+function skuRowHtml(s) {
+  s = s || {};
+  const stockVal = (s.stock === undefined || s.stock === null) ? '' : (Number(s.stock) === -1 ? '' : Number(s.stock));
+  return `<div class="pd-row pd-sku-row">
+    <input class="input input-sm" placeholder="杯型，如 中杯" value="${esc(s.cupSize || '')}" data-f="cupSize">
+    <input class="input input-sm input-money" type="number" step="0.01" min="0" placeholder="售价(元)" value="${yuanInputValue(s.price)}" data-f="price">
+    <input class="input input-sm" type="number" step="1" min="-1" placeholder="库存(-1不限)" value="${stockVal}" data-f="stock">
+    <select class="select input-sm" data-f="status">
+      <option value="1"${Number(s.status) === 1 ? ' selected' : ''}>启用</option>
+      <option value="0"${Number(s.status) === 0 ? ' selected' : ''}>停用</option>
+    </select>
+    <button class="btn btn-sm btn-ghost pd-rm" type="button" title="移除">×</button>
+    ${s.id ? `<input type="hidden" data-f="id" value="${s.id}">` : ''}
+  </div>`;
+}
+
+function specGroupHtml(g) {
+  g = g || {};
+  const optRows = (g.options || []).map(o => specOptRowHtml(o)).join('');
+  const codeHtml = g.id
+    ? `<span class="hint">${esc(g.code || '')}</span>`
+    : `<input class="input input-sm" style="width:110px" placeholder="编码如 SUGAR/TEMP" value="${esc(g.code || '')}" data-gf="code">`;
+  return `<div class="pd-group" ${g.id ? `data-id="${g.id}" data-code="${esc(g.code || '')}"` : 'data-code=""'}>
+    <div class="pd-group-head">
+      <input class="input input-sm" placeholder="规格名，如 糖度" value="${esc(g.name || '')}" data-gf="name">
+      ${codeHtml}
+      <button class="btn btn-sm btn-ghost pd-add-opt" type="button">+ 选项</button>
+      <button class="btn btn-sm btn-ghost pd-rm" type="button" title="移除整组">×</button>
+    </div>
+    <div class="pd-opts">${optRows}</div>
+  </div>`;
+}
+
+function specOptRowHtml(o) {
+  o = o || {};
+  return `<div class="pd-row pd-opt-row">
+    <input class="input input-sm" placeholder="选项，如 少糖" value="${esc(o.label || '')}" data-of="label">
+    <input class="input input-sm input-money" type="number" step="0.01" min="0" placeholder="加价(元)" value="${yuanInputValue(o.extraPrice)}" data-of="extraPrice">
+    <label class="mini"><input type="checkbox" data-of="isDefault" ${Number(o.isDefault) === 1 ? 'checked' : ''}>默认</label>
+    <select class="select input-sm" data-of="status">
+      <option value="1"${Number(o.status) === 1 ? ' selected' : ''}>启用</option>
+      <option value="0"${Number(o.status) === 0 ? ' selected' : ''}>停用</option>
+    </select>
+    <button class="btn btn-sm btn-ghost pd-rm" type="button" title="移除">×</button>
+    ${o.id ? `<input type="hidden" data-of="id" value="${o.id}">` : ''}
+  </div>`;
+}
+
+function toppingRowHtml(t) {
+  t = t || {};
+  const stockVal = (t.stock === undefined || t.stock === null) ? '' : (Number(t.stock) === -1 ? '' : Number(t.stock));
+  return `<div class="pd-row pd-top-row">
+    <input class="input input-sm" placeholder="小料名，如 珍珠" value="${esc(t.name || '')}" data-tf="name">
+    <input class="input input-sm input-money" type="number" step="0.01" min="0" placeholder="单价(元)" value="${yuanInputValue(t.price)}" data-tf="price">
+    <input class="input input-sm" type="number" min="0" placeholder="最多份" value="${Number(t.maxCount == null ? 1 : t.maxCount)}" data-tf="maxCount">
+    <input class="input input-sm" type="number" min="-1" placeholder="库存(-1不限)" value="${stockVal}" data-tf="stock">
+    <select class="select input-sm" data-tf="status">
+      <option value="1"${Number(t.status) === 1 ? ' selected' : ''}>启用</option>
+      <option value="0"${Number(t.status) === 0 ? ' selected' : ''}>停用</option>
+    </select>
+    <button class="btn btn-sm btn-ghost pd-rm" type="button" title="移除">×</button>
+    ${t.id ? `<input type="hidden" data-tf="id" value="${t.id}">` : ''}
+  </div>`;
+}
+
+function addRow(containerSel, html) {
+  const c = document.querySelector(containerSel);
+  if (c) c.insertAdjacentHTML('beforeend', html);
+}
+
+function onPdBodyClick(e) {
+  const t = e.target;
+  if (t.classList.contains('pd-rm')) {
+    const row = t.closest('.pd-row');
+    if (row) { row.remove(); return; }
+    const grp = t.closest('.pd-group');
+    if (grp) grp.remove();
+    return;
+  }
+  if (t.classList.contains('pd-add-opt')) {
+    const opts = t.closest('.pd-group').querySelector('.pd-opts');
+    if (opts) opts.insertAdjacentHTML('beforeend', specOptRowHtml({}));
+    return;
+  }
+}
+
+/** 收集并保存商品详情 */
+async function saveProductDetail(productId) {
+  const skus = Array.from(document.querySelectorAll('#pd_skus .pd-sku-row')).map(row => {
+    const o = {};
+    row.querySelectorAll('[data-f]').forEach(el => {
+      const f = el.dataset.f;
+      if (f === 'id') o.id = Number(el.value);
+      else if (f === 'price') o.price = yuanToFen(el.value);
+      else if (f === 'stock') { const v = (el.value || '').trim(); o.stock = v === '' ? -1 : parseInt(v, 10); }
+      else if (f === 'status') o.status = Number(el.value);
+      else o[f] = (el.value || '').trim();
+    });
+    return o;
+  }).filter(s => (s.cupSize || '').trim() !== '');
+
+  const specGroups = Array.from(document.querySelectorAll('#pd_specs .pd-group')).map(g => {
+    const codeInput = g.querySelector('[data-gf="code"]');
+    const grp = { code: ((codeInput ? codeInput.value : g.dataset.code) || '').trim().toUpperCase(),
+                  name: (g.querySelector('[data-gf="name"]').value || '').trim() };
+    if (g.dataset.id) grp.id = Number(g.dataset.id);
+    grp.options = Array.from(g.querySelectorAll('.pd-opt-row')).map(r => {
+      const o = {};
+      r.querySelectorAll('[data-of]').forEach(el => {
+        const f = el.dataset.of;
+        if (f === 'id') o.id = Number(el.value);
+        else if (f === 'extraPrice') o.extraPrice = yuanToFen(el.value);
+        else if (f === 'isDefault') o.isDefault = el.checked ? 1 : 0;
+        else if (f === 'status') o.status = Number(el.value);
+        else o[f] = (el.value || '').trim();
+      });
+      return o;
+    }).filter(x => (x.label || '').trim() !== '');
+    return grp;
+  });
+
+  const toppings = Array.from(document.querySelectorAll('#pd_toppings .pd-top-row')).map(row => {
+    const o = {};
+    row.querySelectorAll('[data-tf]').forEach(el => {
+      const f = el.dataset.tf;
+      if (f === 'id') o.id = Number(el.value);
+      else if (f === 'price') o.price = yuanToFen(el.value);
+      else if (f === 'maxCount') o.maxCount = parseInt(el.value || '1', 10) || 1;
+      else if (f === 'stock') { const v = (el.value || '').trim(); o.stock = v === '' ? -1 : parseInt(v, 10); }
+      else if (f === 'status') o.status = Number(el.value);
+      else o[f] = (el.value || '').trim();
+    });
+    return o;
+  }).filter(t => (t.name || '').trim() !== '');
+
+  const body = {
+    name: (document.getElementById('pd_name').value || '').trim(),
+    categoryId: Number(document.getElementById('pd_category').value) || null,
+    description: (document.getElementById('pd_desc').value || '').trim(),
+    image: (document.getElementById('pd_image').value || '').trim(),
+    calories: parseInt(document.getElementById('pd_calories').value || '0', 10) || 0,
+    sort: parseInt(document.getElementById('pd_sort').value || '0', 10) || 0,
+    status: Number(document.getElementById('pd_status').value),
+    skus, specGroups, toppings
+  };
+  if (!body.name) { toast('请填写商品名称', 'error'); return; }
+  if (productId) body.id = Number(productId);
+  await request('POST', '/api/admin/product/detail', body, { loadingText: '保存中…' });
+  toast(productId ? '商品详情已保存' : '商品已创建，已自动上架到所有启用门店', 'success');
+  closeModal();
+  await loadProducts();
+}
+
+/* ========================= 6.3 分类管理 ========================= */
+
+async function loadCategories() {
+  $view().innerHTML = skeletonCards();
+  let list;
+  try {
+    list = await request('GET', '/api/admin/categories', null, { silent: true }) || [];
+  } catch (e) {
+    $view().innerHTML = errorBlock('分类列表加载失败', e && e.message);
+    return;
+  }
+  renderCategories(Array.isArray(list) ? list : []);
+}
+
+function renderCategories(list) {
+  state.categories = list;
+  const rows = list.map(c => `
+    <tr>
+      <td><div class="strong">${esc(c.name)}</div></td>
+      <td class="t-nowrap">${esc(c.icon || '-')}</td>
+      <td class="t-right num">${Number(c.sort || 0)}</td>
+      <td class="t-center">
+        <span class="tag ${Number(c.status) === 1 ? 't-COMPLETED' : 't-CANCELLED'}">
+          <i class="tag-dot"></i>${Number(c.status) === 1 ? '启用' : '停用'}
+        </span>
+      </td>
+      <td class="t-right t-nowrap">
+        <button class="btn btn-sm" data-act="category-edit" data-id="${c.id}">编辑</button>
+        <button class="btn btn-sm ${Number(c.status) === 1 ? 'btn-danger' : 'btn-primary'}" data-act="category-toggle" data-id="${c.id}" data-val="${Number(c.status) === 1 ? 0 : 1}">
+          ${Number(c.status) === 1 ? '停用' : '启用'}
+        </button>
+        <button class="btn btn-sm btn-ghost" data-act="category-delete" data-id="${c.id}">删除</button>
+      </td>
+    </tr>`).join('');
+
+  $view().innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <h2>商品分类<span class="sub">共 ${list.length} 个</span></h2>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" data-act="category-new">+ 新建分类</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:200px">分类名称</th>
+            <th style="min-width:90px">图标</th>
+            <th class="t-right" style="min-width:70px">排序</th>
+            <th class="t-center" style="min-width:80px">状态</th>
+            <th class="t-right" style="min-width:200px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${list.length ? rows : `<tr><td colspan="5">${emptyBlock('还没有分类', '点击右上角新建一个分类')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-body muted" style="font-size:12px;padding-top:12px">
+        提示：分类为全局配置，影响小程序端菜单的分组展示；停用后该分类不会出现在用户端菜单。删除分类前需先将该分类下的商品改到其他分类。
+      </div>
+    </div>`;
+}
+
+/** 新建 / 编辑分类弹窗 */
+function openCategoryModal(cat) {
+  const isEdit = !!cat;
+  const c = cat || { name: '', icon: '', sort: 0, status: 1 };
+  const body = `
+    <div class="form-grid">
+      <div class="form-item full">
+        <label>分类名称</label>
+        <input class="input" id="cat_name" value="${esc(c.name)}" placeholder="如：招牌推荐">
+      </div>
+      <div class="form-item">
+        <label>图标</label>
+        <input class="input" id="cat_icon" value="${esc(c.icon || '')}" placeholder="如：star / fruit">
+        <span class="hint">可选，菜单/后台展示用的图标标识</span>
+      </div>
+      <div class="form-item">
+        <label>排序</label>
+        <input class="input input-money" type="number" step="1" min="0" id="cat_sort" value="${Number(c.sort || 0)}">
+        <span class="hint">数字越小越靠前</span>
+      </div>
+      <div class="form-item">
+        <label>状态</label>
+        <select class="select" id="cat_status">
+          <option value="1"${Number(c.status) === 1 ? ' selected' : ''}>启用</option>
+          <option value="0"${Number(c.status) === 0 ? ' selected' : ''}>停用</option>
+        </select>
+      </div>
+    </div>`;
+  const foot = `
+    <button class="btn" data-act="close-modal">取消</button>
+    <button class="btn btn-primary" data-act="category-save" data-id="${isEdit ? c.id : ''}">保存</button>`;
+  openModal(isEdit ? '编辑分类' : '新建分类', body, foot);
+}
+
+/** 保存分类 */
+async function saveCategory(id) {
+  const name = (document.getElementById('cat_name').value || '').trim();
+  if (!name) { toast('请填写分类名称', 'error'); return; }
+  const body = {
+    name,
+    icon: (document.getElementById('cat_icon').value || '').trim(),
+    sort: parseInt(document.getElementById('cat_sort').value, 10) || 0,
+    status: Number(document.getElementById('cat_status').value)
+  };
+  if (id) body.id = Number(id);
+  await request('POST', '/api/admin/category', body, { loadingText: '保存中…' });
+  toast(id ? '分类已更新' : '分类已创建', 'success');
+  closeModal();
+  await loadCategories();
+}
+
+/** 启停分类 */
+async function toggleCategory(id, val) {
+  await request('POST', `/api/admin/category/${id}/status`, { status: Number(val) }, { loadingText: '提交中…' });
+  toast(Number(val) === 1 ? '已启用' : '已停用', 'success');
+  await loadCategories();
+}
+
+/** 删除分类 */
+async function deleteCategory(id) {
+  if (!confirm('确定删除该分类吗？该操作不可恢复。')) return;
+  try {
+    await request('DELETE', `/api/admin/category/${id}`, null, { loadingText: '删除中…' });
+    toast('分类已删除', 'success');
+  } catch (e) {
+    toast(e && e.message ? e.message : '删除失败', 'error');
+  }
+  await loadCategories();
+}
+
+/* ========================= 6.4 门店配置 ========================= */
+
+async function loadStores() {
+  $view().innerHTML = skeletonCards();
+  let list;
+  try {
+    list = await request('GET', '/api/admin/stores', null, { silent: true }) || [];
+  } catch (e) {
+    $view().innerHTML = errorBlock('门店列表加载失败', e && e.message);
+    return;
+  }
+  renderStores(Array.isArray(list) ? list : []);
+}
+
+/**
+ * 门店配置行。金额字段单位均为「分」，
+ * 界面按「元」输入，提交前统一用 yuanToFen() 转换。
+ */
+function renderStores(list) {
+  const rows = list.map(s => `
+    <tr>
+      <td>
+        <div class="strong">${esc(s.name)}</div>
+        <div class="muted" style="font-size:12px;margin-top:2px">${esc(s.address || '')}${s.phone ? ' · ' + esc(s.phone) : ''}</div>
+      </td>
+      <td class="t-center">
+        <select class="select input-sm" data-store="${s.id}" data-field="businessStatus">
+          <option value="1"${Number(s.businessStatus) === 1 ? ' selected' : ''}>营业中</option>
+          <option value="0"${Number(s.businessStatus) === 0 ? ' selected' : ''}>休息中</option>
+        </select>
+      </td>
+      <td class="t-center">
+        <label class="switch"><input type="checkbox" data-store="${s.id}" data-field="supportPickup" ${Number(s.supportPickup) === 1 ? 'checked' : ''}><span></span></label>
+      </td>
+      <td class="t-center">
+        <label class="switch"><input type="checkbox" data-store="${s.id}" data-field="supportDelivery" ${Number(s.supportDelivery) === 1 ? 'checked' : ''}><span></span></label>
+      </td>
+      <td><input class="input input-sm input-money" type="number" step="0.01" min="0" style="width:88px"
+                 value="${yuanInputValue(s.deliveryFee)}" data-store="${s.id}" data-field="deliveryFee"></td>
+      <td><input class="input input-sm input-money" type="number" step="0.01" min="0" style="width:88px"
+                 value="${yuanInputValue(s.minDeliveryAmount)}" data-store="${s.id}" data-field="minDeliveryAmount"></td>
+      <td><input class="input input-sm input-money" type="number" step="0.01" min="0" style="width:88px"
+                 value="${yuanInputValue(s.freeDeliveryThreshold)}" data-store="${s.id}" data-field="freeDeliveryThreshold"></td>
+      <td class="t-right t-nowrap">
+        <button class="btn btn-sm btn-primary" data-act="store-save" data-id="${s.id}">保存</button>
+      </td>
+    </tr>`).join('');
+
+  $view().innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <h2>门店配置<span class="sub">共 ${list.length} 家门店</span></h2>
+        <div class="spacer"></div>
+        <span class="muted" style="font-size:12px">金额单位：元（提交时自动 ×100 转为分）</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:210px">门店</th>
+            <th class="t-center" style="min-width:100px">营业状态</th>
+            <th class="t-center" style="min-width:76px">自取</th>
+            <th class="t-center" style="min-width:76px">外卖</th>
+            <th style="min-width:110px">配送费(元)</th>
+            <th style="min-width:110px">起送价(元)</th>
+            <th style="min-width:132px">满额免配送费(元)</th>
+            <th class="t-right" style="min-width:80px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${list.length ? rows : `<tr><td colspan="8">${emptyBlock('暂无门店', '请检查账号权限')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+/** 收集一行门店表单并提交 */
+async function saveStore(id) {
+  const get = field => document.querySelector(`[data-store="${id}"][data-field="${field}"]`);
+  const body = {
+    businessStatus: Number(get('businessStatus').value),
+    supportPickup: get('supportPickup').checked ? 1 : 0,
+    supportDelivery: get('supportDelivery').checked ? 1 : 0,
+    deliveryFee: yuanToFen(get('deliveryFee').value),
+    minDeliveryAmount: yuanToFen(get('minDeliveryAmount').value),
+    freeDeliveryThreshold: yuanToFen(get('freeDeliveryThreshold').value)
+  };
+  await request('PUT', `/api/admin/store/${id}`, body, { loadingText: '保存中…' });
+  toast('门店配置已保存', 'success');
+  // 刷新顶栏门店信息与缓存
+  const list = await request('GET', '/api/admin/stores', null, { silent: true });
+  if (Array.isArray(list)) state.stores = list;
+  renderShell();
+  await loadStores();
+}
+
+/* ========================= 6.5 优惠券管理 ========================= */
+
+async function loadCoupons() {
+  $view().innerHTML = skeletonCards();
+  let list;
+  try {
+    list = await request('GET', '/api/admin/coupons', null, { silent: true }) || [];
+  } catch (e) {
+    $view().innerHTML = errorBlock('优惠券列表加载失败', e && e.message);
+    return;
+  }
+  state.coupons = Array.isArray(list) ? list : [];
+  renderCoupons();
+}
+
+function renderCoupons() {
+  const list = state.coupons;
+
+  const rows = list.map(c => {
+    // 面额 / 折扣展示
+    let valueText;
+    if (c.type === 'DISCOUNT') {
+      valueText = `<strong>${(Number(c.discount || 0) / 1000).toFixed(1)} 折</strong>` +
+        (Number(c.maxDiscount) > 0 ? `<span class="muted" style="font-size:12px"> 上限 ${fmtMoney(c.maxDiscount)}</span>` : '');
+    } else {
+      valueText = `<strong>${fmtMoney(c.amount)}</strong>`;
+    }
+    const scope = SCOPE_TYPE[c.scopeType] || c.scopeType || '-';
+    const chs = String(c.channels || '').split(',').filter(Boolean)
+      .map(x => `<span class="type-tag type-${esc(x.trim())}">${esc(CHANNELS[x.trim()] || x.trim())}</span>`).join(' ');
+    const valid = c.validType === 'RANGE'
+      ? `${fmtTime(c.startTime)} ~ ${fmtTime(c.endTime)}`
+      : `领取后 ${c.validDays ?? '-'} 天有效`;
+
+    return `<tr>
+      <td><div class="strong">${esc(c.name)}</div>
+          <div class="muted" style="font-size:12px">ID ${c.id} · 已发 ${c.issued ?? 0}${Number(c.total) > 0 ? '/' + c.total : ''}</div></td>
+      <td class="t-nowrap">${esc(couponTypeLabel(c.type))}</td>
+      <td class="t-nowrap">${valueText}</td>
+      <td class="t-right num">${Number(c.minAmount) > 0 ? fmtMoney(c.minAmount) : '<span class="muted">无门槛</span>'}</td>
+      <td class="t-nowrap">${esc(scope)}</td>
+      <td class="t-nowrap">${chs || '<span class="muted">-</span>'}</td>
+      <td class="t-nowrap" style="font-size:12px">${esc(valid)}</td>
+      <td class="t-center num">${c.limitPerUser ?? '-'}</td>
+      <td class="t-center num">${Number(c.pointCost) > 0 ? c.pointCost : '<span class="muted">不可兑换</span>'}</td>
+      <td class="t-center">
+        <span class="tag ${Number(c.status) === 1 ? 't-COMPLETED' : 't-CANCELLED'}">
+          <i class="tag-dot"></i>${Number(c.status) === 1 ? '启用' : '停用'}
+        </span>
+      </td>
+      <td class="t-right t-nowrap">
+        <button class="btn btn-sm" data-act="coupon-edit" data-id="${c.id}">编辑</button>
+        <button class="btn btn-sm ${Number(c.status) === 1 ? 'btn-danger' : 'btn-primary'}" data-act="coupon-toggle" data-id="${c.id}" data-val="${Number(c.status) === 1 ? 0 : 1}">
+          ${Number(c.status) === 1 ? '停用' : '启用'}
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  $view().innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <h2>优惠券模板<span class="sub">共 ${list.length} 张</span></h2>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" data-act="coupon-new">+ 新建券模板</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:190px">券名称</th>
+            <th style="min-width:90px">类型</th>
+            <th style="min-width:120px">面额 / 折扣</th>
+            <th class="t-right" style="min-width:96px">使用门槛</th>
+            <th style="min-width:96px">适用范围</th>
+            <th style="min-width:120px">适用渠道</th>
+            <th style="min-width:150px">有效期</th>
+            <th class="t-center" style="min-width:86px">每人限领</th>
+            <th class="t-center" style="min-width:96px">积分兑换</th>
+            <th class="t-center" style="min-width:76px">状态</th>
+            <th class="t-right" style="min-width:140px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${list.length ? rows : `<tr><td colspan="11">${emptyBlock('还没有券模板', '点击右上角新建一张')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+/**
+ * 券模板表单（新建 / 编辑共用）。
+ * 折扣用「折」输入：9 折 → 万分比 9000；金额用「元」输入，提交前转分。
+ */
+function openCouponModal(coupon) {
+  const isEdit = !!coupon;
+  const c = coupon || {
+    name: '', type: 'NO_THRESHOLD', amount: 0, minAmount: 0, discount: 10000, maxDiscount: 0,
+    scopeType: 'ALL', channels: 'PICKUP,DELIVERY', validType: 'DAYS', validDays: 7,
+    startTime: '', endTime: '', total: -1, limitPerUser: 1, pointCost: 0, stackable: 0, status: 1
+  };
+  const chs = String(c.channels || '').split(',').map(x => x.trim());
+
+  const body = `
+    <div class="form-grid">
+      <div class="form-item full">
+        <label>券名称</label>
+        <input class="input" id="cp_name" value="${esc(c.name)}" placeholder="如：满 15 减 3">
+      </div>
+
+      <div class="form-item">
+        <label>券类型</label>
+        <select class="select" id="cp_type" data-change="coupon-type">
+          ${Object.keys(COUPON_TYPE).map(k => `<option value="${k}"${c.type === k ? ' selected' : ''}>${COUPON_TYPE[k]}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label>状态</label>
+        <select class="select" id="cp_status">
+          <option value="1"${Number(c.status) === 1 ? ' selected' : ''}>启用</option>
+          <option value="0"${Number(c.status) === 0 ? ' selected' : ''}>停用</option>
+        </select>
+      </div>
+
+      <div class="form-item" id="cp_amount_wrap">
+        <label>优惠金额（元）</label>
+        <input class="input input-money" type="number" step="0.01" min="0" id="cp_amount" value="${yuanInputValue(c.amount)}">
+        <span class="hint">无门槛券 / 满减券的立减金额</span>
+      </div>
+
+      <div class="form-item" id="cp_min_wrap">
+        <label>使用门槛（元）</label>
+        <input class="input input-money" type="number" step="0.01" min="0" id="cp_minAmount" value="${yuanInputValue(c.minAmount)}">
+        <span class="hint">0 表示无门槛</span>
+      </div>
+
+      <div class="form-item" id="cp_discount_wrap">
+        <label>折扣（折）</label>
+        <input class="input input-money" type="number" step="0.1" min="0.1" max="9.9" id="cp_discount" value="${(Number(c.discount || 10000) / 1000).toFixed(1)}">
+        <span class="hint">9 折填 9，8.5 折填 8.5（存为万分比）</span>
+      </div>
+
+      <div class="form-item" id="cp_max_wrap">
+        <label>最高抵扣（元）</label>
+        <input class="input input-money" type="number" step="0.01" min="0" id="cp_maxDiscount" value="${yuanInputValue(c.maxDiscount)}">
+        <span class="hint">0 表示不限</span>
+      </div>
+
+      <div class="form-item">
+        <label>适用范围</label>
+        <select class="select" id="cp_scopeType">
+          ${Object.keys(SCOPE_TYPE).map(k => `<option value="${k}"${c.scopeType === k ? ' selected' : ''}>${SCOPE_TYPE[k]}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label>范围 ID（逗号分隔）</label>
+        <input class="input" id="cp_scopeIds" value="${esc(c.scopeIds || '')}" placeholder="仅指定分类/商品时填写">
+        <span class="hint">契约未定义该字段，后端忽略亦不影响保存</span>
+      </div>
+
+      <div class="form-item full">
+        <label>适用渠道</label>
+        <div class="check-row">
+          <label><input type="checkbox" id="cp_ch_pickup" ${chs.includes('PICKUP') ? 'checked' : ''}> 自取</label>
+          <label><input type="checkbox" id="cp_ch_delivery" ${chs.includes('DELIVERY') ? 'checked' : ''}> 外卖</label>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <label>有效期方式</label>
+        <select class="select" id="cp_validType" data-change="coupon-valid">
+          <option value="DAYS"${c.validType === 'DAYS' ? ' selected' : ''}>领取后 N 天有效</option>
+          <option value="RANGE"${c.validType === 'RANGE' ? ' selected' : ''}>固定起止时间</option>
+        </select>
+      </div>
+
+      <div class="form-item" id="cp_days_wrap">
+        <label>有效天数</label>
+        <input class="input input-money" type="number" step="1" min="1" id="cp_validDays" value="${c.validDays ?? 7}">
+      </div>
+
+      <div class="form-item" id="cp_start_wrap">
+        <label>开始时间</label>
+        <input class="input" type="datetime-local" id="cp_startTime" value="${serverToLocal(c.startTime)}">
+      </div>
+
+      <div class="form-item" id="cp_end_wrap">
+        <label>结束时间</label>
+        <input class="input" type="datetime-local" id="cp_endTime" value="${serverToLocal(c.endTime)}">
+      </div>
+
+      <div class="form-item">
+        <label>发放总量</label>
+        <input class="input input-money" type="number" step="1" id="cp_total" value="${c.total ?? -1}">
+        <span class="hint">-1 表示不限量</span>
+      </div>
+
+      <div class="form-item">
+        <label>每人限领</label>
+        <input class="input input-money" type="number" step="1" min="1" id="cp_limitPerUser" value="${c.limitPerUser ?? 1}">
+      </div>
+
+      <div class="form-item">
+        <label>积分兑换价</label>
+        <input class="input input-money" type="number" step="1" min="0" id="cp_pointCost" value="${c.pointCost ?? 0}">
+        <span class="hint">0 表示不可用积分兑换</span>
+      </div>
+
+      <div class="form-item">
+        <label>叠加规则</label>
+        <div class="check-row" style="padding-top:6px">
+          <label><input type="checkbox" id="cp_stackable" ${Number(c.stackable) === 1 ? 'checked' : ''}> 可与会员等级折扣叠加</label>
+        </div>
+      </div>
+    </div>`;
+
+  const foot = `
+    <button class="btn" data-act="close-modal">取消</button>
+    <button class="btn btn-primary" data-act="coupon-save" data-id="${isEdit ? c.id : ''}">保存</button>`;
+
+  openModal(isEdit ? '编辑券模板' : '新建券模板', body, foot);
+  syncCouponForm();
+}
+
+/** 依据券类型 / 有效期方式切换表单可见项 */
+function syncCouponForm() {
+  const type = document.getElementById('cp_type').value;
+  const validType = document.getElementById('cp_validType').value;
+  const isDiscount = type === 'DISCOUNT';
+  document.getElementById('cp_amount_wrap').classList.toggle('hidden', isDiscount);
+  document.getElementById('cp_discount_wrap').classList.toggle('hidden', !isDiscount);
+  document.getElementById('cp_max_wrap').classList.toggle('hidden', !isDiscount);
+  document.getElementById('cp_days_wrap').classList.toggle('hidden', validType !== 'DAYS');
+  document.getElementById('cp_start_wrap').classList.toggle('hidden', validType !== 'RANGE');
+  document.getElementById('cp_end_wrap').classList.toggle('hidden', validType !== 'RANGE');
+}
+
+/** 提交券模板 */
+async function saveCoupon(id) {
+  const val = k => document.getElementById(k).value;
+  const chk = k => document.getElementById(k).checked;
+
+  const name = val('cp_name').trim();
+  if (!name) { toast('请填写券名称', 'error'); return; }
+
+  const channels = [];
+  if (chk('cp_ch_pickup')) channels.push('PICKUP');
+  if (chk('cp_ch_delivery')) channels.push('DELIVERY');
+  if (!channels.length) { toast('至少选择一个适用渠道', 'error'); return; }
+
+  const type = val('cp_type');
+  const body = {
+    name,
+    type,
+    amount: type === 'DISCOUNT' ? 0 : yuanToFen(val('cp_amount')),
+    minAmount: yuanToFen(val('cp_minAmount')),
+    discount: Math.round(Number(val('cp_discount')) * 1000),   // 折 → 万分比
+    maxDiscount: yuanToFen(val('cp_maxDiscount')),
+    scopeType: val('cp_scopeType'),
+    scopeIds: val('cp_scopeIds').trim(),
+    channels: channels.join(','),
+    validType: val('cp_validType'),
+    validDays: parseInt(val('cp_validDays'), 10) || 0,
+    startTime: localToServer(val('cp_startTime')),
+    endTime: localToServer(val('cp_endTime')),
+    total: parseInt(val('cp_total'), 10),
+    limitPerUser: parseInt(val('cp_limitPerUser'), 10) || 1,
+    pointCost: parseInt(val('cp_pointCost'), 10) || 0,
+    stackable: chk('cp_stackable') ? 1 : 0,
+    status: Number(val('cp_status'))
+  };
+  if (id) body.id = Number(id);
+
+  if (type !== 'DISCOUNT' && body.amount <= 0) { toast('优惠金额必须大于 0', 'error'); return; }
+  if (type === 'DISCOUNT' && (body.discount <= 0 || body.discount > 9900)) { toast('折扣需在 0.1 ~ 9.9 折之间', 'error'); return; }
+
+  await request('POST', '/api/admin/coupon', body, { loadingText: '保存中…' });
+  toast(id ? '券模板已更新' : '券模板已创建', 'success');
+  closeModal();
+  await loadCoupons();
+}
+
+/** 停用 / 启用券模板 */
+async function toggleCoupon(id, status) {
+  await request('POST', `/api/admin/coupon/${id}/status`, { status: Number(status) }, { loadingText: '提交中…' });
+  toast(Number(status) === 1 ? '券模板已启用' : '券模板已停用', 'success');
+  await loadCoupons();
+}
+
+/* ========================= 6.6 系统配置 ========================= */
+
+async function loadConfigs() {
+  $view().innerHTML = skeletonCards();
+  let list;
+  try {
+    list = await request('GET', '/api/admin/configs', null, { silent: true }) || [];
+  } catch (e) {
+    $view().innerHTML = errorBlock('系统配置加载失败', e && e.message);
+    return;
+  }
+  renderConfigs(Array.isArray(list) ? list : []);
+}
+
+function renderConfigs(list) {
+  const rows = list.map(c => {
+    const key = c.configKey || c.key;
+    const desc = c.description || CONFIG_DESC[key] || '';
+    const isBool = key.endsWith('.enabled') || key === 'order.auto_accept';
+    let editor;
+    if (isBool) {
+      editor = `<select class="select input-sm" data-cfg="${esc(key)}">
+        <option value="1"${String(c.configValue) === '1' ? ' selected' : ''}>开启</option>
+        <option value="0"${String(c.configValue) !== '1' ? ' selected' : ''}>关闭</option>
+      </select>`;
+    } else {
+      editor = `<input class="input input-sm" style="width:130px" value="${esc(c.configValue)}" data-cfg="${esc(key)}">`;
+    }
+    return `<tr>
+      <td><code style="font-size:12px">${esc(key)}</code></td>
+      <td>${desc ? esc(desc) : '<span class="muted">—</span>'}</td>
+      <td>${editor}</td>
+      <td class="muted" style="font-size:12px">${fmtTime(c.updatedAt)}</td>
+      <td class="t-right"><button class="btn btn-sm btn-primary" data-act="config-save" data-key="${esc(key)}">保存</button></td>
+    </tr>`;
+  }).join('');
+
+  $view().innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <h2>系统配置<span class="sub">共 ${list.length} 项</span></h2>
+        <div class="spacer"></div>
+        <span class="muted" style="font-size:12px">修改后立即写入并生效</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="min-width:210px">配置键</th>
+            <th style="min-width:260px">说明</th>
+            <th style="min-width:150px">值</th>
+            <th style="min-width:110px">更新时间</th>
+            <th class="t-right" style="min-width:80px">操作</th>
+          </tr></thead>
+          <tbody>
+            ${list.length ? rows : `<tr><td colspan="5">${emptyBlock('暂无配置项', '请检查 sys_config 表种子数据')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+async function saveConfig(key) {
+  // 配置键含点号，不能用属性选择器字符串直接拼，改为遍历匹配
+  const el = Array.prototype.find.call(
+    document.querySelectorAll('[data-cfg]'),
+    node => node.getAttribute('data-cfg') === key
+  );
+  if (!el) return;
+  const value = String(el.value).trim();
+  await request('PUT', `/api/admin/config/${encodeURIComponent(key)}`, { value }, { loadingText: '保存中…' });
+  toast('配置已更新', 'success');
+  await loadConfigs();
+}
+
+/* ========================= 7. 自动刷新 / 事件绑定 ========================= */
+
+function startAutoRefresh() {
+  stopAutoRefresh();
+  state.timer = setInterval(async () => {
+    if (!state.autoRefresh) return;
+    // 静默刷新：不弹遮罩、不提示业务错误
+    if (state.view === 'orders') await loadOrders({ silent: true });
+    else if (state.view === 'overview') {
+      try {
+        const data = await request('GET', '/api/admin/overview', { storeId: state.storeId || '' }, { silent: true });
+        if (state.view === 'overview') renderOverview(data || {});
+      } catch (e) { /* 静默忽略，避免打断操作 */ }
+    }
+  }, REFRESH_INTERVAL_MS);
+}
+function stopAutoRefresh() {
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+}
+
+/* ---------- 点击委托 ---------- */
+document.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act;
+  const id = el.dataset.id;
+
+  switch (act) {
+    // 登录
+    case 'fill-demo':
+      document.getElementById('loginUser').value = el.dataset.user;
+      document.getElementById('loginPass').value = el.dataset.pass;
+      document.getElementById('loginErr').textContent = '';
+      break;
+
+    // 通用
+    case 'nav':      await switchView(el.dataset.view); break;
+    case 'refresh':  await switchView(state.view); break;
+    case 'logout':
+      if (confirm('确定要退出登录吗？')) { clearSession(); showLogin(''); }
+      break;
+    case 'close-modal': closeModal(); break;
+
+    // 订单
+    case 'order-search':
+      state.orders.keyword = (document.getElementById('orderKeyword').value || '').trim();
+      state.orders.page = 1;
+      state.orders.seenIds = null;
+      await loadOrders();
+      break;
+    case 'order-reset':
+      state.orders.keyword = '';
+      state.orders.status = '';
+      state.orders.page = 1;
+      state.orders.seenIds = null;
+      await loadOrders();
+      break;
+    case 'page':
+      state.orders.page = Number(el.dataset.page);
+      await loadOrders();
+      break;
+    case 'order-accept':
+    case 'order-ready':
+    case 'order-delivering':
+    case 'order-complete':
+      await doOrderAction(Number(id), act);
+      break;
+    case 'order-refund': await doRefund(Number(id)); break;
+    case 'redeem':       await doRedeem(); break;
+
+    // 商品
+    case 'product-search':
+      state.products.keyword = (document.getElementById('productKeyword').value || '').trim();
+      await loadProducts();
+      break;
+    case 'product-reset':
+      state.products.keyword = '';
+      state.products.categoryId = '';
+      await loadProducts();
+      break;
+    case 'on-sale':   await toggleOnSale(Number(id), el.dataset.val); break;
+    case 'sku-stock': await saveSkuStock(Number(id)); break;
+    case 'product-detail':      await openProductDetailModal(Number(id)); break;
+    case 'product-detail-save': await saveProductDetail(el.dataset.id); break;
+    case 'product-new':         await openProductDetailModal(null); break;
+
+    // 门店
+    case 'store-save': await saveStore(Number(id)); break;
+
+    // 券
+    case 'coupon-new':  openCouponModal(null); break;
+    case 'coupon-edit': {
+      const c = state.coupons.find(x => String(x.id) === String(id));
+      if (c) openCouponModal(c);
+      break;
+    }
+    case 'coupon-save': await saveCoupon(el.dataset.id || ''); break;
+    case 'coupon-toggle': await toggleCoupon(Number(id), el.dataset.val); break;
+
+    // 分类
+    case 'category-new':  openCategoryModal(null); break;
+    case 'category-edit': {
+      const cat = state.categories.find(x => String(x.id) === String(id));
+      if (cat) openCategoryModal(cat);
+      break;
+    }
+    case 'category-save': await saveCategory(el.dataset.id || ''); break;
+    case 'category-toggle': await toggleCategory(Number(id), el.dataset.val); break;
+    case 'category-delete': await deleteCategory(Number(id)); break;
+
+    // 配置
+    case 'config-save': await saveConfig(el.dataset.key); break;
+  }
+});
+
+/* ---------- change 委托 ---------- */
+document.addEventListener('change', async (e) => {
+  const el = e.target.closest('[data-change]');
+  const cf = e.target.closest('[data-field]');   // 门店表单内的控件
+  if (!el && !cf) return;
+
+  // 券表单联动
+  if (el && (el.dataset.change === 'coupon-type' || el.dataset.change === 'coupon-valid')) {
+    syncCouponForm();
+    return;
+  }
+
+  switch (el && el.dataset.change) {
+    case 'store':
+      state.storeId = el.value || null;
+      renderShell();
+      await switchView(state.view);
+      break;
+    case 'auto':
+      state.autoRefresh = el.checked;
+      document.getElementById('autoDot').className = 'dot' + (state.autoRefresh ? ' on' : '');
+      toast(state.autoRefresh ? '已开启自动刷新（每 10 秒）' : '已关闭自动刷新', 'success');
+      break;
+    case 'order-status':
+      state.orders.status = el.value;
+      state.orders.page = 1;
+      state.orders.seenIds = null;
+      await loadOrders();
+      break;
+    case 'product-category':
+      state.products.categoryId = el.value;
+      await loadProducts();
+      break;
+    case 'sold-out':
+      if (el.dataset.id) await toggleSoldOut(Number(el.dataset.id), el.checked);
+      break;
+    case 'manual-sold-out':
+      if (el.dataset.id) await toggleManualSoldOut(Number(el.dataset.id), el.checked);
+      break;
+  }
+});
+
+/* ---------- 键盘 ---------- */
+document.addEventListener('keydown', (e) => {
+  // 核销框回车即核销
+  if (e.key === 'Enter' && e.target.id === 'redeemInput') { e.preventDefault(); doRedeem(); return; }
+  // 搜索框回车触发搜索
+  if (e.key === 'Enter' && e.target.id === 'orderKeyword') { e.preventDefault(); state.orders.page = 1; loadOrders(); return; }
+  if (e.key === 'Enter' && e.target.id === 'productKeyword') { e.preventDefault(); state.products.keyword = e.target.value.trim(); loadProducts(); return; }
+  // ESC 关闭弹窗
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ---------- 登录表单 ---------- */
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  doLogin(document.getElementById('loginUser').value.trim(), document.getElementById('loginPass').value);
+});
+
+/* ---------- 启动 ---------- */
+(function bootstrap() {
+  const token = getToken();
+  if (!token) { showLogin(''); return; }
+  try {
+    state.token = token;
+    state.admin = JSON.parse(localStorage.getItem(ADMIN_KEY) || 'null');
+    if (!state.admin) { showLogin(''); return; }
+  } catch (e) {
+    showLogin('本地登录信息已损坏，请重新登录');
+    return;
+  }
+  // 先渲染主界面，再由 enterApp 校验 token；失效时 request 会统一回到登录页
+  enterApp().catch(() => showLogin('登录已失效，请重新登录'));
+})();
+</script>
+</body>
+</html>

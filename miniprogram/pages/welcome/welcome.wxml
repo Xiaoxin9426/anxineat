@@ -1,0 +1,16 @@
+<view class="page" wx:if="{{!hide}}">
+  <view class="skip" bindtap="skip">跳过 {{left}}ms</view>
+
+  <view class="brand">
+    <view class="logo">安心饮</view>
+    <view class="slogan">一杯安心的茶</view>
+  </view>
+
+  <view class="dots">
+    <view class="dot"></view>
+    <view class="dot"></view>
+    <view class="dot"></view>
+  </view>
+
+  <view class="footer">v1.0 · 演示版</view>
+</view>

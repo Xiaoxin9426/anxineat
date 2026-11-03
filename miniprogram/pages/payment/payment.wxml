@@ -1,0 +1,52 @@
+<view class="page" wx:if="{{order}}">
+  <view class="hero">
+    <view class="amount text-strong">¥{{payAmount/100}}</view>
+    <view class="order-no text-sm">订单号 {{order.orderNo}}</view>
+    <view class="expire" wx:if="{{!expired}}">
+      <text>支付剩余</text>
+      <text class="text-primary text-strong"> {{countdown}}</text>
+    </view>
+    <view class="expire" wx:else>
+      <text class="text-primary text-strong">订单已超时</text>
+    </view>
+  </view>
+
+  <view class="card m24">
+    <view class="row kv"><text>门店</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.storeName}}</text></view>
+    <view class="row kv"><text>下单时间</text><text>{{order.createdAt}}</text></view>
+    <view class="row kv" wx:if="{{order.expectTime}}"><text>期望取餐</text><text>{{order.expectTime}}</text></view>
+    <view class="row kv" wx:if="{{order.addressSnapshot}}"><text>配送地址</text><text class="text-ellipsis" style="max-width:60%;text-align:right">{{order.addressSnapshot}}</text></view>
+  </view>
+
+  <!-- 模拟支付渠道：本地演示，手动触发回调 -->
+  <block wx:if="{{mock}}">
+    <view class="card m24">
+      <view class="notice-title">⚠ 模拟支付说明</view>
+      <view class="notice">{{notice}}</view>
+    </view>
+
+    <view class="actions m24">
+      <view class="btn btn-primary {{paying || expired ? 'disabled' : ''}}" bindtap="onPaySuccess">支付成功</view>
+      <view class="btn btn-line" bindtap="onPayFail" hover-class="none">支付失败</view>
+      <view class="btn btn-line" bindtap="onPayDuplicate" hover-class="none">重复回调验证</view>
+    </view>
+  </block>
+
+  <!-- 真实微信支付渠道：拉起 wx.requestPayment -->
+  <block wx:else>
+    <view class="card m24">
+      <view class="notice-title">微信支付</view>
+      <view class="notice">点击下方按钮将拉起微信支付完成付款。支付成功后会自动跳转到订单结果页；若回调延迟，页面会自动轮询确认结果。</view>
+    </view>
+
+    <view class="actions m24">
+      <view class="btn btn-primary {{paying || expired ? 'disabled' : ''}}" bindtap="onWechatPay">立即支付 ¥{{payAmount/100}}</view>
+    </view>
+  </block>
+
+  <view class="cancel" bindtap="onCancelOrder">取消订单</view>
+</view>
+
+<view class="loading" wx:elif="{{loading}}">
+  <view class="skeleton sk-block"></view>
+</view>
